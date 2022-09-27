@@ -63,79 +63,56 @@ while not done:
     screen.fill(WHITE)
     textPrint.reset()
 
+    # # For each joystick:
+    # Left Stick:
+    #     Left -> Right   - Axis 0
+    #     Up   -> Down    - Axis 1
+    # Right Stick:
+    #     Left -> Right   - Axis 3
+    #     Up   -> Down    - Axis 4
+    # Left Trigger:
+    #     Out -> In       - Axis 2
+    # Right Trigger:
+    #     Out -> In       - Axis 5
+    # Buttons:
+    #     A Button        - Button 0
+    #     B Button        - Button 1
+    #     X Button        - Button 2
+    #     Y Button        - Button 3
+    #     Left Bumper     - Button 4
+    #     Right Bumper    - Button 5
+    #     Back Button     - Button 6
+    #     Start Button    - Button 7
+    #     L. Stick In     - Button 8
+    #     R. Stick In     - Button 9
+    #     Guide Button    - Button 10
+    # Hat/D-pad:
+    #     Down -> Up      - get_hat()[1]
+    #     Left -> Right   - get_hat()[0]
+
     # Get count of joysticks.
     joystick_count = pygame.joystick.get_count()
     textPrint.tprint(screen, "Number of joysticks: {}".format(joystick_count))
-
     if joystick_count == 1:
         joystick = pygame.joystick.Joystick(0)
-        if joystick.get_axis(0) and joystick.get_axis(0) < -0.5:
+        if joystick.get_axis(0) and joystick.get_axis(0) < -0.2:
             x -= speed
-        if joystick.get_axis(0) and joystick.get_axis(0) > 0.5:
+        if joystick.get_axis(0) and joystick.get_axis(0) > 0.2:
             x += speed
-        if joystick.get_axis(1) and joystick.get_axis(1) < -0.5:
+        if joystick.get_axis(1) and joystick.get_axis(1) < -0.2:
             y -= speed
-        if joystick.get_axis(1) and joystick.get_axis(1) > 0.5:
+        if joystick.get_axis(1) and joystick.get_axis(1) > 0.2:
+            y += speed
+        if joystick.get_hat(0)[0] == -1:
+            x -= speed
+        if joystick.get_hat(0)[0] == 1:
+            x += speed
+        if joystick.get_hat(0)[1] == 1:
+            y -= speed
+        if joystick.get_hat(0)[1] == -1:
             y += speed
 
     pygame.draw.rect(screen, (0,150,255), (x, y, width, height))
-
-    # # For each joystick:
-    # for i in range(joystick_count):
-    #     joystick = pygame.joystick.Joystick(i)
-    #     joystick.init()
-
-    #     try:
-    #         jid = joystick.get_instance_id()
-    #     except AttributeError:
-    #         # get_instance_id() is an SDL2 method
-    #         jid = joystick.get_id()
-    #     textPrint.tprint(screen, "Joystick {}".format(jid))
-    #     textPrint.indent()
-
-    #     # Get the name from the OS for the controller/joystick.
-    #     name = joystick.get_name()
-    #     textPrint.tprint(screen, "Joystick name: {}".format(name))
-
-    #     try:
-    #         guid = joystick.get_guid()
-    #     except AttributeError:
-    #         # get_guid() is an SDL2 method
-    #         pass
-    #     else:
-    #         textPrint.tprint(screen, "GUID: {}".format(guid))
-
-    #     # Usually axis run in pairs, up/down for one, and left/right for
-    #     # the other.
-    #     axes = joystick.get_numaxes()
-    #     textPrint.tprint(screen, "Number of axes: {}".format(axes))
-    #     textPrint.indent()
-
-    #     for i in range(axes):
-    #         axis = joystick.get_axis(i)
-    #         textPrint.tprint(screen, "Axis {} value: {:>6.3f}".format(i, axis))
-    #     textPrint.unindent()
-
-    #     buttons = joystick.get_numbuttons()
-    #     textPrint.tprint(screen, "Number of buttons: {}".format(buttons))
-    #     textPrint.indent()
-
-    #     for i in range(buttons):
-    #         button = joystick.get_button(i)
-    #         textPrint.tprint(screen, "Button {:>2} value: {}".format(i, button))
-    #     textPrint.unindent()
-
-    #     hats = joystick.get_numhats()
-    #     textPrint.tprint(screen, "Number of hats: {}".format(hats))
-    #     textPrint.indent()
-
-    #     # Hat position. All or nothing for direction, not a float like
-    #     # get_axis(). Position is a tuple of int values (x, y).
-    #     for i in range(hats):
-    #         hat = joystick.get_hat(i)
-    #         textPrint.tprint(screen, "Hat {} value: {}".format(i, str(hat)))
-    #     textPrint.unindent()
-    #     textPrint.unindent()
 
     #
     # ALL CODE TO DRAW SHOULD GO ABOVE THIS COMMENT
