@@ -1,18 +1,5 @@
-bicycles = [ 'trek', 'cannondale', 'redline', 'redline', 'cannondale', 'redline', 'specialized']
-
-list_bicycles = []
-for bicycle in bicycles:
-    if bicycle not in list_bicycles:
-        list_bicycles.append(bicycle)
-        print(bicycle)
-
-
-
-# length_bicycle = len(list_bicycles)
-
-# for i in range(len(list_bicycles)):
-#     count = 0
-#     for bicycle in bicycles:
-#         if bicycle == list_bicycles[i]:
-#             count += 1
-#     print(list_bicycles[i] + ':' + str(count))
+player_params = {'width' : 40, 'height' : 40, 'velocity' : 1, 'color' : (0, 200, 255), 'x' : 50, 'y' : 440}
+player1 = player_params
+player1['width'] = 20
+print('player_params ' + str(player_params))
+print('player1 ' + str(player1))

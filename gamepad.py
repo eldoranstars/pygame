@@ -1,75 +1,27 @@
-import pygame, sys
-from random import randint
+import pygame
+BLACK = pygame.Color(0, 0, 0)
+WHITE = pygame.Color(255, 255, 255)
+BLUE = pygame.Color(0, 200, 255)
 
-# Reference Information
-# Left Stick:
-#     Left -> Right   -  get_axis(0)
-#     Up   -> Down    - get_axis(1)
-# Right Stick:
-#     Left -> Right   - get_axis(3)
-#     Up   -> Down    - get_axis(4)
-# Left Trigger:
-#     Out -> In       - get_axis(2)
-# Right Trigger:
-#     Out -> In       - get_axis(5)
-# Buttons:
-#     A Button        - Button 0
-#     B Button        - Button 1
-#     X Button        - Button 2
-#     Y Button        - Button 3
-#     Left Bumper     - Button 4
-#     Right Bumper    - Button 5
-#     Back Button     - Button 6
-#     Start Button    - Button 7
-#     L. Stick In     - Button 8
-#     R. Stick In     - Button 9
-#     Guide Button    - Button 10
-# Hat/D-pad:
-#     Down -> Up      - get_hat()[1]
-#     Left -> Right   - get_hat()[0]
-
-# Define some colors.
-BLACK = pygame.Color('black')
-WHITE = pygame.Color('white')
-
-# This is a simple class that will help us print to the screen.
-class TextPrint():
-    def __init__(self):
-        # self.reset()
-        self.font = pygame.font.Font(None, 20)
-
-    def tprint(self, screen, textString):
-        textBitmap = self.font.render(textString, True, BLACK)
-        screen.blit(textBitmap, (self.x, self.y))
-        self.y += self.line_height
-
-    def reset(self):
-        self.x = 10
-        self.y = 10
-        self.line_height = 15
-
-    def indent(self):
-        self.x += 10
-
-    def unindent(self):
-        self.x -= 10
-
-# This is a simple class that will help us to move player
-class Player():
-    width = 40
-    height = 40
-    velocity = 10
-    color = (0, 200, 255)
-    x = 50
-    y = 480 - height
+def tprint(screen, textString):
+    x = 10
+    y = 10
+    line_height = 15
+    # This creates a new Surface with the specified text rendered on it. 
+    textBitmap = pygame.font.Font(None, 20).render(textString, True, BLACK)
+    # pygame provides no way to directly draw text on an existing Surface: 
+    # instead you must use Font.render() to create an image (Surface) of the text, then blit this image onto another Surface.
+    screen.blit(textBitmap, (x, y))
+    y += line_height
 
 # ----------- Main Program Loop -----------
 pygame.init()
 pygame.display.set_caption("My Game")
 screen = pygame.display.set_mode((480, 720))
 clock = pygame.time.Clock()
-textPrint = TextPrint()
-player = Player()
+# textPrint = TextPrint()
+player1 = {'width' : 40, 'height' : 40, 'velocity' : 5, 'color' : BLUE, 'x' : 50, 'y' : 50}
+player2 = {'width' : 40, 'height' : 40, 'velocity' : 5, 'color' : BLACK, 'x' : 50, 'y' : 50}
 run = True
 while run:
     #
@@ -79,40 +31,64 @@ while run:
     for event in pygame.event.get(): # User did something.
         if event.type == pygame.QUIT: # If user clicked close.
             run = False # Flag that we are done so we exit this loop.
-        if event.type == pygame.K_ESCAPE:
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             run = False 
 
     #
     # DRAWING STEP
     #
-    # First, clear the screen to white. Don't put other drawing commands
-    # above this, or they will be erased with this command.
+    # First, clear the screen to white. Don't put other drawing commands above this, or they will be erased with this command.
     screen.fill(WHITE)
-    textPrint.reset()
-
-    # Get count of joysticks.
+    # Show count of joysticks
     joystick_count = pygame.joystick.get_count()
-    textPrint.tprint(screen, "Number of joysticks: {}".format(joystick_count))
-    if joystick_count == 1:
-        joystick = pygame.joystick.Joystick(0)
-        if joystick.get_axis(0) and joystick.get_axis(0) < -0.2:
-            player.x -= player.velocity
-        if joystick.get_axis(0) and joystick.get_axis(0) > 0.2:
-            player.x += player.velocity
-        if joystick.get_axis(1) and joystick.get_axis(1) < -0.2:
-            player.y -= player.velocity
-        if joystick.get_axis(1) and joystick.get_axis(1) > 0.2:
-            player.y += player.velocity
-        if joystick.get_hat(0)[0] == -1:
-            player.x -= player.velocity
-        if joystick.get_hat(0)[0] == 1:
-            player.x += player.velocity
-        if joystick.get_hat(0)[1] == 1:
-            player.y -= player.velocity
-        if joystick.get_hat(0)[1] == -1:
-            player.y += player.velocity
+    tprint(screen, "Number of joysticks: {}".format(joystick_count))
+    tprint(screen, "Numberafaffaff ofafaf joysticks: {}".format(joystick_count))
 
-        pygame.draw.rect(screen, player.color, (player.x, player.y, player.width, player.height))
+    if joystick_count >= 1:
+        pygame.draw.rect(screen, player1['color'], (player1['x'], player1['y'], player1['width'], player1['height']))
+        joystick1 = pygame.joystick.Joystick(0)
+        if joystick1.get_axis(0) and joystick1.get_axis(0) < -0.2:
+            player1['x'] -= player1['velocity']
+        if joystick1.get_axis(0) and joystick1.get_axis(0) > 0.2:
+            player1['x'] += player1['velocity']
+        if joystick1.get_axis(1) and joystick1.get_axis(1) < -0.2:
+            player1['y'] -= player1['velocity']
+        if joystick1.get_axis(1) and joystick1.get_axis(1) > 0.2:
+            player1['y'] += player1['velocity']
+        if joystick1.get_hat(0)[0] == -1:
+            player1['x'] -= player1['velocity']
+        if joystick1.get_hat(0)[0] == 1:
+            player1['x'] += player1['velocity']
+        if joystick1.get_hat(0)[1] == 1:
+            player1['y'] -= player1['velocity']
+        if joystick1.get_hat(0)[1] == -1:
+            player1['y'] += player1['velocity']
+        if joystick1.get_button(7) == 1:
+            event.type = pygame.QUIT
+
+
+    if joystick_count > 1:
+        pygame.draw.rect(screen, player2['color'], (player2['x'], player2['y'], player2['width'], player2['height']))
+        joystick2 = pygame.joystick.Joystick(1)
+        if joystick2.get_axis(0) and joystick2.get_axis(0) < -0.2:
+            player2['x'] -= player2['velocity']
+        if joystick2.get_axis(0) and joystick2.get_axis(0) > 0.2:
+            player2['x'] += player2['velocity']
+        if joystick2.get_axis(1) and joystick2.get_axis(1) < -0.2:
+            player2['y'] -= player2['velocity']
+        if joystick2.get_axis(1) and joystick2.get_axis(1) > 0.2:
+            player2['y'] += player2['velocity']
+        if joystick2.get_hat(0)[0] == -1:
+            player2['x'] -= player2['velocity']
+        if joystick2.get_hat(0)[0] == 1:
+            player2['x'] += player2['velocity']
+        if joystick2.get_hat(0)[1] == 1:
+            player2['y'] -= player2['velocity']
+        if joystick2.get_hat(0)[1] == -1:
+            player2['y'] += player2['velocity']
+        if joystick2.get_button(7) == 1:
+            event.type = pygame.QUIT
+
     #
     # ALL CODE TO DRAW SHOULD GO ABOVE THIS COMMENT
     #
@@ -123,6 +99,5 @@ while run:
     clock.tick(60)
 
 # Close the window and quit.
-# If you forget this line, the program will 'hang'
-# on exit if running from IDLE.
+# If you forget this line, the program will 'hang' on exit if running from IDLE.
 pygame.quit()
