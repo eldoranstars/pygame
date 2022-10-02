@@ -2,24 +2,24 @@ import pygame
 BLACK = pygame.Color(0, 0, 0)
 WHITE = pygame.Color(255, 255, 255)
 BLUE = pygame.Color(0, 200, 255)
+SCREEN_WIDTH = 720
+SCREEN_HEIGHT = 480
 
-def tprint(screen, textString):
-    x = 10
-    y = 10
-    line_height = 15
-    # This creates a new Surface with the specified text rendered on it. 
+def tprint(screen, textString, x, y):
+    # https://www.pygame.org/docs/ref/font.html#pygame.font.Font
+    # Font(filename|object|pathlib.Path, size) -> Font
+    # https://www.pygame.org/docs/ref/font.html#pygame.font.Font.render
+    # render(text, antialias, color, background=None) -> Surface
+    # https://www.pygame.org/docs/ref/surface.html?highlight=blit#pygame.Surface.blit
+    # blit(source, dest, area=None, special_flags=0) -> Rect
     textBitmap = pygame.font.Font(None, 20).render(textString, True, BLACK)
-    # pygame provides no way to directly draw text on an existing Surface: 
-    # instead you must use Font.render() to create an image (Surface) of the text, then blit this image onto another Surface.
     screen.blit(textBitmap, (x, y))
-    y += line_height
 
 # ----------- Main Program Loop -----------
 pygame.init()
 pygame.display.set_caption("My Game")
-screen = pygame.display.set_mode((480, 720))
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 clock = pygame.time.Clock()
-# textPrint = TextPrint()
 player1 = {'width' : 40, 'height' : 40, 'velocity' : 5, 'color' : BLUE, 'x' : 50, 'y' : 50}
 player2 = {'width' : 40, 'height' : 40, 'velocity' : 5, 'color' : BLACK, 'x' : 50, 'y' : 50}
 run = True
@@ -27,10 +27,9 @@ while run:
     #
     # EVENT PROCESSING STEP
     #
-    # Possible joystick actions: JOYAXISMOTION, JOYBALLMOTION, JOYBUTTONDOWN, JOYBUTTONUP, JOYHATMOTION
-    for event in pygame.event.get(): # User did something.
-        if event.type == pygame.QUIT: # If user clicked close.
-            run = False # Flag that we are done so we exit this loop.
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            run = False
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             run = False 
 
@@ -41,8 +40,7 @@ while run:
     screen.fill(WHITE)
     # Show count of joysticks
     joystick_count = pygame.joystick.get_count()
-    tprint(screen, "Number of joysticks: {}".format(joystick_count))
-    tprint(screen, "Numberafaffaff ofafaf joysticks: {}".format(joystick_count))
+    tprint(screen, "Number of joysticks : {}".format(joystick_count), SCREEN_WIDTH/2 - 66, 10)
 
     if joystick_count >= 1:
         pygame.draw.rect(screen, player1['color'], (player1['x'], player1['y'], player1['width'], player1['height']))
