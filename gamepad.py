@@ -2,8 +2,8 @@ import pygame
 BLACK = pygame.Color(0, 0, 0)
 WHITE = pygame.Color(255, 255, 255)
 BLUE = pygame.Color(0, 200, 255)
-SCREEN_WIDTH = 480
-SCREEN_HEIGHT = 720
+SCREEN_WIDTH = 1920
+SCREEN_HEIGHT = 1080
 
 def screen_text(screen, textString, x, y):
     # pygame provides no way to directly draw text on an existing Surface: 

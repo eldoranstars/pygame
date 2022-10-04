@@ -1,5 +1,27 @@
-player_params = {'width' : 40, 'height' : 40, 'velocity' : 1, 'color' : (0, 200, 255), 'x' : 50, 'y' : 440}
-player1 = player_params
-player1['width'] = 20
-print('player_params ' + str(player_params))
-print('player1 ' + str(player1))
+class Dog():
+
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+    def sit(self):
+        print(self.name.title() + " is now sitting.")
+
+    def roll_over(self):
+        print(self.name.title() + " rolled over!")
+
+    def update_age(self, newage):
+        self.age += newage
+
+class ElectroDog(Dog):
+
+    def __init__(self, name, age):
+        super().__init__(name, age)
+        self.battery_size = 70
+
+    def describe_battery_size(self):
+        print('bat.size: ' + str(self.battery_size))
+
+
+my_dog = ElectroDog('Bob', 6)
+my_dog.describe_battery_size()
