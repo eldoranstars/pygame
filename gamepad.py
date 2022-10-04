@@ -32,6 +32,10 @@ def player_joystick(player, joystick):
             game_pause(joystick)
 
 def game_pause(joystick):
+    if joystick_count >= 1:
+        pygame.draw.rect(screen, player1['color'], (player1['x'], player1['y'], player1['width'], player1['height']))
+    if joystick_count > 1:
+        pygame.draw.rect(screen, player2['color'], (player2['x'], player2['y'], player2['width'], player2['height']))
     pygame.display.update(screen_text(screen, "BACK to RESUME", SCREEN_WIDTH/2 - 52, 25))
     pygame.display.update(screen_text(screen, "START to QUIT", SCREEN_WIDTH/2 - 45, 40))
     pause = True
@@ -69,15 +73,16 @@ while run:
     screen_text(screen, "Number of joysticks : {}".format(joystick_count), SCREEN_WIDTH/2 - 66, 10)
 
     if joystick_count >= 1:
-        pygame.draw.rect(screen, player1['color'], (player1['x'], player1['y'], player1['width'], player1['height']))
         joystick1 = pygame.joystick.Joystick(0)
         player_joystick(player1, joystick1)
+        pygame.draw.rect(screen, player1['color'], (player1['x'], player1['y'], player1['width'], player1['height']))
+
 
 
     if joystick_count > 1:
-        pygame.draw.rect(screen, player2['color'], (player2['x'], player2['y'], player2['width'], player2['height']))
         joystick2 = pygame.joystick.Joystick(1)
         player_joystick(player2, joystick2)
+        pygame.draw.rect(screen, player2['color'], (player2['x'], player2['y'], player2['width'], player2['height']))
 
     #
     # ALL CODE TO DRAW SHOULD GO ABOVE THIS COMMENT
