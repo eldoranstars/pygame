@@ -55,19 +55,14 @@ player1 = {'width' : 40, 'height' : 40, 'velocity' : 5, 'color' : BLUE, 'x' : 50
 player2 = {'width' : 40, 'height' : 40, 'velocity' : 5, 'color' : BLACK, 'x' : 50, 'y' : 50}
 run = True
 while run:
-    #
     # EVENT PROCESSING STEP
-    #
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             run = False 
 
-    #
     # DRAWING STEP
-    #
-    # First, clear the screen to white. Don't put other drawing commands above this, or they will be erased with this command.
     screen.fill(WHITE)
     joystick_count = pygame.joystick.get_count()
     screen_text(screen, "Number of joysticks : {}".format(joystick_count), SCREEN_WIDTH/2 - 66, 10)
@@ -77,16 +72,11 @@ while run:
         player_joystick(player1, joystick1)
         pygame.draw.rect(screen, player1['color'], (player1['x'], player1['y'], player1['width'], player1['height']))
 
-
-
     if joystick_count > 1:
         joystick2 = pygame.joystick.Joystick(1)
         player_joystick(player2, joystick2)
         pygame.draw.rect(screen, player2['color'], (player2['x'], player2['y'], player2['width'], player2['height']))
-
-    #
     # ALL CODE TO DRAW SHOULD GO ABOVE THIS COMMENT
-    #
 
     pygame.display.update()
     # Limit frames per second.
