@@ -3,8 +3,8 @@ from lib_survey import AnonymousSurvey
 
 class TestAnonmyousSurvey(unittest.TestCase):
 
-    def __init__(self, someArg) -> None:
-        super().__init__(someArg)
+    def __init__(self) -> None:
+        super().__init__()
         question = "What language did you first learn to speak?"
         self.my_survey = AnonymousSurvey(question)
         self.responses = ['English', 'Spanish', 'Mandarin']
