@@ -1,20 +1,18 @@
-import sys
 import pygame
+import game_functions as gf
+
 from settings import Settings
+from ship import Ship
 
 def run_game():
     pygame.init()
-    screen = pygame.display.set_mode((Settings().screen_width, Settings().screen_height), pygame.SCALED, vsync=1)
     pygame.display.set_caption("Alien Invasion")
+    ai_settings = Settings()
+    screen = pygame.display.set_mode((ai_settings.screen_width, ai_settings.screen_height), pygame.SCALED, vsync=1)
+    ship = Ship(screen)
 
     while True:
-        # Отслеживание событий клавиатуры и мыши.
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                sys.exit()
-
-        # Отображение последнего прорисованного экрана.
-        screen.fill(Settings().bg_color)
-        pygame.display.update()
+        gf.check_events()
+        gf.update_screen(ai_settings, screen, ship)
 
 run_game()
