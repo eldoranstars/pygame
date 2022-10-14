@@ -13,6 +13,7 @@ def run_game():
 
     while True:
         gf.check_events()
+        gf.check_keyboard(ship, ai_settings)
         gf.update_screen(ai_settings, screen, ship)
 
 run_game()
