@@ -1,5 +1,4 @@
 import pygame
-screen = pygame.display.set_mode((400, 400), pygame.SCALED, vsync=1)
 
 class Ship():
     def __init__(self, screen):

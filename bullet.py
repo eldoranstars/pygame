@@ -10,7 +10,7 @@ class Bullet(Sprite):
         # Создание пули в позиции (0,0) и назначение правильной позиции.
         self.rect = pygame.Rect(0, 0, ai_settings.bullet_width, ai_settings.bullet_height)
         self.rect.centerx = ship.rect.centerx
-        self.rect.top = ship.rect.top
+        self.rect.top = ship.rect.top - ai_settings.bullet_height * 2
         # Позиция пули хранится в вещественном формате.
         # self.y = float(self.rect.y)
         self.color = ai_settings.bullet_color
@@ -19,9 +19,9 @@ class Bullet(Sprite):
     def update(self):
         """Перемещает пулю вверх по экрану."""
         # Обновление позиции пули в вещественном формате.
-        self.rect.y -= self.speed_factor
+        # self.y = float(self.rect.y)
         # Обновление позиции прямоугольника.
-        # self.rect.y = self.y
+        self.rect.y -= self.speed_factor
 
     def draw_bullet(self):
         """Вывод пули на экран."""
