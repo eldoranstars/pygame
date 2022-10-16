@@ -23,8 +23,9 @@ def update_screen(settings, screen, ship, bullets, aliens):
         alien.update()
         if alien.rect.right < 0 or alien.rect.left > settings.screen_width or alien.rect.top > settings.screen_height:
             aliens.remove(alien)
+        if alien.rect.collidepoint(ship.rect.center) or alien.rect.collidepoint(ship.rect.midbottom):
+            sys.exit()
         for bullet in bullets:
-            # if alien.rect.collidepoint(bullet.rect.centerx, bullet.rect.centery):
             if alien.rect.contains(bullet.rect):
                 aliens.remove(alien)
                 bullets.remove(bullet)
