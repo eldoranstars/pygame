@@ -12,9 +12,11 @@ def update_screen(ai_settings, screen, ship, bullets):
     # Отображение последнего прорисованного экрана.
     screen.fill(ai_settings.bg_color)
     ship.blitme()
-    for bullet in bullets.sprites():
-        bullet.draw_bullet()
-    bullets.update()
+    for bullet in bullets:
+        bullet.blitme()
+        bullet.update()
+        if bullet.rect.bottom <= 0:
+            bullets.remove(bullet)
     pygame.display.update()
 
 def check_keyboard(ai_settings, screen, ship, bullets):
@@ -29,6 +31,6 @@ def check_keyboard(ai_settings, screen, ship, bullets):
         ship.rect.centery += ai_settings.ship_speed_factor
     if key[pygame.K_ESCAPE] == 1:
         sys.exit()
-    if key[pygame.K_SPACE] == 1 and len(bullets) < 100:
+    if key[pygame.K_SPACE] == 1 and len(bullets) < ai_settings.bullets_allowed:
        new_bullet = Bullet(ai_settings, screen, ship)
-       bullets.add(new_bullet)
+       bullets.append(new_bullet)

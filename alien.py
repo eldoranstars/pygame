@@ -1,6 +1,5 @@
 import pygame
 import game_functions as gf
-from pygame.sprite import Group
 from settings import Settings
 from ship import Ship
 
@@ -10,7 +9,7 @@ def run_game():
     ai_settings = Settings()
     screen = pygame.display.set_mode((ai_settings.screen_width, ai_settings.screen_height), pygame.SCALED, vsync=1)
     ship = Ship(screen)
-    bullets = Group()
+    bullets = []
 
     while True:
         gf.check_events()
