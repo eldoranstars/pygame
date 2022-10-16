@@ -2,16 +2,15 @@ import pygame
 
 class Ship():
     def __init__(self, screen):
-        """Инициализирует корабль и задает его начальную позицию."""
-        self.screen = screen
-        # Загрузка изображения корабля и получение прямоугольника.
-        self.image = pygame.image.load('images/ship.png')
-        self.rect = self.image.get_rect()
-        self.screen_rect = screen.get_rect()
-        # Каждый новый корабль появляется у нижнего края экрана.
-        self.rect.centerx = self.screen_rect.centerx
-        self.rect.bottom = self.screen_rect.bottom
+        # Атрибуты класса
+        self.screen = screen.surface
+        # Загрузка изображения и получение прямоугольника
+        self.surface = pygame.image.load('images/ship.png')
+        self.rect = self.surface.get_rect()
+        # Получение изначальных координат изображения
+        self.rect.centerx = screen.rect.centerx
+        self.rect.bottom = screen.rect.bottom
 
     def blitme(self):
-        """Рисует корабль в текущей позиции."""
-        self.screen.blit(self.image, self.rect)
+        # Вывод изображения на экран
+        self.screen.blit(self.surface, self.rect)

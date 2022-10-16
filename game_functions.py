@@ -8,29 +8,30 @@ def check_events():
         if event.type == pygame.QUIT:
             sys.exit()
 
-def update_screen(ai_settings, screen, ship, bullets):
-    # Отображение последнего прорисованного экрана.
-    screen.fill(ai_settings.bg_color)
+def update_screen(settings, screen, ship, bullets):
+    # Вывод изображений на экран.
+    screen.blitme()
     ship.blitme()
     for bullet in bullets:
         bullet.blitme()
         bullet.update()
-        if bullet.rect.bottom <= 0:
+        if bullet.rect.bottom < (bullet.start_position - settings.screen_height):
             bullets.remove(bullet)
     pygame.display.update()
 
-def check_keyboard(ai_settings, screen, ship, bullets):
+def check_keyboard(settings, screen, ship, bullets):
+    # Отслеживание нажатий клавиатуры и мыши.
     key = pygame.key.get_pressed()
-    if key[pygame.K_RIGHT] == 1 and ship.rect.centerx < ai_settings.screen_width:
-        ship.rect.centerx += ai_settings.ship_speed_factor
-    if key[pygame.K_LEFT] == 1 and ship.rect.centerx > 0:
-        ship.rect.centerx -= ai_settings.ship_speed_factor
-    if key[pygame.K_UP] == 1 and ship.rect.centery > 0:
-        ship.rect.centery -= ai_settings.ship_speed_factor
-    if key[pygame.K_DOWN] == 1 and ship.rect.centery < ai_settings.screen_height:
-        ship.rect.centery += ai_settings.ship_speed_factor
     if key[pygame.K_ESCAPE] == 1:
         sys.exit()
-    if key[pygame.K_SPACE] == 1 and len(bullets) < ai_settings.bullets_allowed:
-       new_bullet = Bullet(ai_settings, screen, ship)
+    if key[pygame.K_RIGHT] == 1 and ship.rect.right < settings.screen_width:
+        ship.rect.centerx += settings.ship_speed_factor
+    if key[pygame.K_LEFT] == 1 and ship.rect.left > 0:
+        ship.rect.centerx -= settings.ship_speed_factor
+    if key[pygame.K_UP] == 1 and ship.rect.top > 0:
+        ship.rect.centery -= settings.ship_speed_factor
+    if key[pygame.K_DOWN] == 1 and ship.rect.bottom < settings.screen_height:
+        ship.rect.centery += settings.ship_speed_factor
+    if key[pygame.K_SPACE] == 1 and len(bullets) < settings.bullets_allowed:
+       new_bullet = Bullet(settings, screen, ship)
        bullets.append(new_bullet)

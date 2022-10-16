@@ -50,7 +50,6 @@ def game_pause(joystick):
 pygame.init()
 pygame.display.set_caption("My Game")
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SCALED, vsync=1)
-clock = pygame.time.Clock()
 player1 = {'width' : 40, 'height' : 40, 'velocity' : 5, 'color' : BLUE, 'x' : 50, 'y' : 50}
 player2 = {'width' : 40, 'height' : 40, 'velocity' : 5, 'color' : BLACK, 'x' : 50, 'y' : 50}
 run = True
@@ -80,7 +79,7 @@ while run:
 
     pygame.display.update()
     # Limit frames per second.
-    # clock.tick(60)
+    # pygame.time.Clock().tick(60)
 
 # Close the window and quit.
 # If you forget this line, the program will 'hang' on exit if running from IDLE.

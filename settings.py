@@ -1,7 +1,5 @@
 class Settings():
-    """Класс для хранения всех настроек игры Alien Invasion."""
     def __init__(self):
-        """Инициализирует настройки игры."""
         # Параметры экрана
         self.screen_width = 480
         self.screen_height = 720
@@ -12,4 +10,4 @@ class Settings():
         self.bullets_allowed = 1
         self.bullet_width = 3
         self.bullet_height = 9
-        self.bullet_color = 60, 60, 60
+        self.bullet_color = (60, 60, 60)
