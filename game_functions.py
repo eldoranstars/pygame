@@ -2,6 +2,7 @@ import sys
 import pygame
 from bullet import Bullet
 from alien import Alien
+from text import Text
 
 def check_events():
     # Отслеживание событий клавиатуры и мыши.
@@ -24,7 +25,8 @@ def update_screen(settings, screen, ship, bullets, aliens):
         if alien.rect.right < 0 or alien.rect.left > settings.screen_width or alien.rect.top > settings.screen_height:
             aliens.remove(alien)
         if alien.rect.collidepoint(ship.rect.center) or alien.rect.collidepoint(ship.rect.midbottom):
-            sys.exit()
+            # sys.exit()
+            Text(settings, screen, 'Collide with alien').blitme()
         for bullet in bullets:
             if alien.rect.contains(bullet.rect):
                 aliens.remove(alien)

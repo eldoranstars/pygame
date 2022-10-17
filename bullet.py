@@ -1,5 +1,4 @@
 import pygame
-from pygame.sprite import Sprite
 
 class Bullet():
     def __init__(self, settings, screen, ship):

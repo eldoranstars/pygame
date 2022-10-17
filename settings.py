@@ -14,3 +14,7 @@ class Settings():
         # Параметры чужих
         self.aliens_allowed = 5
         self.alien_speed_factor = 1
+        # Параметры текста
+        self.text_color = (0, 0, 0)
+        self.text_center = self.screen_width / 2
+        self.text_bottom = self.screen_height - 20
