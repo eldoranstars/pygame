@@ -10,6 +10,10 @@ def check_events():
         if event.type == pygame.QUIT:
             sys.exit()
 
+def collision(rect, w = 0.9, h = 0.9):
+    # Получаем дополнительный прямоугольник для обработки коллизий.
+    return pygame.Rect(rect.center, (rect.width * w, rect.height * h))
+
 def update_screen(settings, screen, ship, bullets, aliens):
     # Вывод изображений на экран.
     screen.blitme()
@@ -22,11 +26,11 @@ def update_screen(settings, screen, ship, bullets, aliens):
     for alien in aliens:
         alien.blitme()
         alien.update()
-        if alien.rect.right < 0 or alien.rect.left > settings.screen_width or alien.rect.top > settings.screen_height:
+        if not screen.rect.colliderect(alien.rect):
             aliens.remove(alien)
-        if alien.rect.collidepoint(ship.rect.center) or alien.rect.collidepoint(ship.rect.midbottom):
-            # sys.exit()
+        if collision(alien.rect).colliderect(collision(ship.rect)):
             Text(settings, screen, 'Collide with alien').blitme()
+            # sys.exit()
         for bullet in bullets:
             if alien.rect.contains(bullet.rect):
                 aliens.remove(alien)

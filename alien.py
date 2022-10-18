@@ -11,7 +11,7 @@ class Alien():
         self.surface = pygame.image.load('images/invader.png')
         self.rect = self.surface.get_rect()
         # Получение изначальных координат изображения
-        self.rect.centerx = random.randrange(self.rect.centerx, settings.screen_width, self.rect.width)
+        self.rect.centerx = random.randrange(self.rect.width, settings.screen_width, self.rect.width)
         self.rect.centery = 0
 
     def update(self):
