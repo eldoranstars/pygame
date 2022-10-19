@@ -1,5 +1,6 @@
 import sys
 import pygame
+import random
 from bullet import Bullet
 from alien import Alien
 from text import Text
@@ -10,9 +11,9 @@ def check_events():
         if event.type == pygame.QUIT:
             sys.exit()
 
-def collision(rect, w = 0.9, h = 0.9):
+def collision(rect, wm = 0.9, hm = 0.9):
     # Получаем дополнительный прямоугольник для обработки коллизий.
-    return pygame.Rect(rect.center, (rect.width * w, rect.height * h))
+    return pygame.Rect(rect.center, (rect.width * wm, rect.height * hm))
 
 def update_screen(settings, screen, ship, bullets, aliens):
     # Вывод изображений на экран.
@@ -28,7 +29,7 @@ def update_screen(settings, screen, ship, bullets, aliens):
         alien.update()
         if not screen.rect.colliderect(alien.rect):
             aliens.remove(alien)
-        if collision(alien.rect).colliderect(collision(ship.rect)):
+        if collision(alien.rect).colliderect(collision(ship.rect, 0.6)):
             Text(settings, screen, 'Collide with alien').blitme()
             # sys.exit()
         for bullet in bullets:
@@ -51,11 +52,11 @@ def check_keyboard(settings, screen, ship, bullets):
     if key[pygame.K_DOWN] == 1 and ship.rect.bottom < settings.screen_height:
         ship.rect.centery += settings.ship_speed_factor
     if key[pygame.K_SPACE] == 1 and len(bullets) < settings.bullets_allowed:
-       new_bullet = Bullet(settings, screen, ship)
-       bullets.append(new_bullet)
+        new_bullet = Bullet(settings, screen, ship)
+        bullets.append(new_bullet)
 
 def create_fleet(settings, screen, aliens):
     # Создание пришельца и размещение его в ряду.
-    for alien in range(settings.aliens_allowed):
+    if random.randrange(1,100) > 98:
         alien = Alien(settings, screen)
         aliens.append(alien)

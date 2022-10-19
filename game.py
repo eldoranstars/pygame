@@ -11,9 +11,9 @@ screen = Screen(settings)
 ship = Ship(screen)
 bullets = []
 aliens = []
-gf.create_fleet(settings, screen, aliens)
 
 while True:
     gf.check_events()
     gf.check_keyboard(settings, screen, ship, bullets)
     gf.update_screen(settings, screen, ship, bullets, aliens)
+    gf.create_fleet(settings, screen, aliens)

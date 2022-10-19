@@ -6,9 +6,10 @@ class Screen():
         self.settings = settings
         # Загрузка изображения и получение прямоугольника
         self.surface = pygame.display.set_mode((settings.screen_width, settings.screen_height), pygame.SCALED, vsync=1)
-        self.surface.fill(settings.bg_color)
+        self.bg = pygame.image.load('images/space.png')
         self.rect = self.surface.get_rect()
 
     def blitme(self):
         # Вывод изображения на экран
-        self.surface.fill(self.settings.bg_color)
+        # self.surface.fill(self.settings.bg_color)
+        self.surface.blit(self.bg, self.rect)
