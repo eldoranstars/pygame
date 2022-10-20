@@ -1,6 +1,7 @@
 import sys
 import pygame
 import random
+from time import sleep
 from bullet import Bullet
 from alien import Alien
 from text import Text
@@ -21,23 +22,28 @@ def collision_test(screen, object, wm, hm):
     # Вывод коллизий на экран.
     screen.surface.blit(pygame.Surface((collision(object.rect, wm, hm).width,collision(object.rect, wm, hm).height)), collision(object.rect, wm, hm))
 
-def update_bullets(settings, bullets):
+def update_bullets(settings, bullets, aliens):
     # Вывод изображений на экран.
     for bullet in bullets:
         bullet.update()
         if bullet.rect.bottom < (bullet.start_position - settings.screen_height):
             bullets.remove(bullet)
+        for alien in aliens:
+            if alien.rect.contains(bullet.rect):
+                aliens.remove(alien)
+                bullets.remove(bullet)
 
-def update_aliens(screen, bullets, aliens):
+def update_aliens(screen, aliens, ship, stats):
     # Вывод изображений на экран.
     for alien in aliens:
         alien.update()
         if not screen.rect.colliderect(alien.rect):
             aliens.remove(alien)
-        for bullet in bullets:
-            if alien.rect.contains(bullet.rect):
-                aliens.remove(alien)
-                bullets.remove(bullet)
+        if collision(ship.rect, 0.6, 0.9).colliderect(collision(alien.rect, 0.8, 0.8)):
+            stats.ships_left -= 1
+            ship.rect.centerx = screen.rect.centerx
+            ship.rect.bottom = screen.rect.bottom
+            sleep(1)
 
 def update_screen(settings, screen, ship, bullets, aliens):
     # Вывод изображений на экран.

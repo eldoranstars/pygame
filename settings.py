@@ -6,7 +6,6 @@ class Settings():
         self.screen_width = 480
         self.screen_height = 720
         self.bg_color = pygame.image.load('images/space.png')
-        self.ship_speed_factor = 5
         # Параметры пули
         self.bullets_allowed = 1
         self.bullet_speed_factor = 15
@@ -16,6 +15,9 @@ class Settings():
         # Параметры чужих
         self.aliens_allowed = 15
         self.alien_speed_factor = 1
+        # Параметры корабля
+        self.ship_limit = 3
+        self.ship_speed_factor = 5
         # Параметры текста
         self.text_color = (0, 0, 0)
         self.text_center = self.screen_width / 2
