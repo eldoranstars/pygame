@@ -11,9 +11,33 @@ def check_events():
         if event.type == pygame.QUIT:
             sys.exit()
 
-def collision(rect, wm = 0.9, hm = 0.9):
+def collision(rect, wm, hm):
     # Получаем дополнительный прямоугольник для обработки коллизий.
-    return pygame.Rect(rect.center, (rect.width * wm, rect.height * hm))
+    collision = pygame.Rect(rect.center, (rect.width * wm, rect.height * hm))
+    collision.center = rect.center
+    return collision
+
+def collision_test(screen, object, wm, hm):
+    # Вывод коллизий на экран.
+    screen.surface.blit(pygame.Surface((collision(object.rect, wm, hm).width,collision(object.rect, wm, hm).height)), collision(object.rect, wm, hm))
+
+def update_bullets(settings, bullets):
+    # Вывод изображений на экран.
+    for bullet in bullets:
+        bullet.update()
+        if bullet.rect.bottom < (bullet.start_position - settings.screen_height):
+            bullets.remove(bullet)
+
+def update_aliens(screen, bullets, aliens):
+    # Вывод изображений на экран.
+    for alien in aliens:
+        alien.update()
+        if not screen.rect.colliderect(alien.rect):
+            aliens.remove(alien)
+        for bullet in bullets:
+            if alien.rect.contains(bullet.rect):
+                aliens.remove(alien)
+                bullets.remove(bullet)
 
 def update_screen(settings, screen, ship, bullets, aliens):
     # Вывод изображений на экран.
@@ -21,21 +45,10 @@ def update_screen(settings, screen, ship, bullets, aliens):
     ship.blitme()
     for bullet in bullets:
         bullet.blitme()
-        bullet.update()
-        if bullet.rect.bottom < (bullet.start_position - settings.screen_height):
-            bullets.remove(bullet)
     for alien in aliens:
         alien.blitme()
-        alien.update()
-        if not screen.rect.colliderect(alien.rect):
-            aliens.remove(alien)
-        if collision(alien.rect).colliderect(collision(ship.rect, 0.6)):
+        if collision(ship.rect, 0.6, 1).colliderect(collision(alien.rect, 0.8, 0.8)):
             Text(settings, screen, 'Collide with alien').blitme()
-            # sys.exit()
-        for bullet in bullets:
-            if alien.rect.contains(bullet.rect):
-                aliens.remove(alien)
-                bullets.remove(bullet)
     pygame.display.update()
 
 def check_keyboard(settings, screen, ship, bullets):
@@ -56,7 +69,7 @@ def check_keyboard(settings, screen, ship, bullets):
         bullets.append(new_bullet)
 
 def create_fleet(settings, screen, aliens):
-    # Создание пришельца и размещение его в ряду.
-    if random.randrange(1,100) > 98:
+    # Создание противника и размещение его в ряду.
+    if random.randrange(1,100) > 97:
         alien = Alien(settings, screen)
         aliens.append(alien)
