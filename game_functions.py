@@ -47,11 +47,11 @@ def update_screen(settings, screen, ship, bullets, aliens):
         bullet.blitme()
     for alien in aliens:
         alien.blitme()
-        if collision(ship.rect, 0.6, 1).colliderect(collision(alien.rect, 0.8, 0.8)):
+        if collision(ship.rect, 0.6, 0.9).colliderect(collision(alien.rect, 0.8, 0.8)):
             Text(settings, screen, 'Collide with alien').blitme()
     pygame.display.update()
 
-def check_keyboard(settings, screen, ship, bullets):
+def update_player(settings, screen, ship, bullets):
     # Отслеживание нажатий клавиатуры и мыши.
     key = pygame.key.get_pressed()
     if key[pygame.K_ESCAPE] == 1:
@@ -68,8 +68,8 @@ def check_keyboard(settings, screen, ship, bullets):
         new_bullet = Bullet(settings, screen, ship)
         bullets.append(new_bullet)
 
-def create_fleet(settings, screen, aliens):
+def update_fleet(settings, screen, aliens):
     # Создание противника и размещение его в ряду.
-    if random.randrange(1,100) > 97:
+    if random.randrange(1,100) > 57 and len(aliens) < settings.aliens_allowed:
         alien = Alien(settings, screen)
         aliens.append(alien)
