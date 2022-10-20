@@ -3,8 +3,8 @@ import pygame
 class Settings():
     def __init__(self):
         # Параметры экрана
-        self.screen_width = 1920
-        self.screen_height = 1080
+        self.screen_width = 480
+        self.screen_height = 720
         self.bg_color = pygame.image.load('images/space.png')
         self.ship_speed_factor = 5
         # Параметры пули
