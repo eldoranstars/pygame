@@ -32,7 +32,11 @@ def update_bullets(settings, bullets, aliens):
         for alien in aliens:
             if alien.rect.contains(bullet.rect):
                 aliens.remove(alien)
-                bullets.remove(bullet)
+                try:
+                    bullets.remove(bullet)
+                # если пуля попала сразу в два объекта
+                except:
+                    ValueError
         if bullet.rect.bottom < (bullet.start_position - settings.screen_height):
             bullets.remove(bullet)
 

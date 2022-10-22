@@ -7,7 +7,7 @@ class Button():
         self.button_color = (150, 150, 255)
         self.text_color = (0, 0, 0)
         # Загрузка изображения и получение прямоугольника
-        self.surface = pygame.font.SysFont(None, 48).render(msg, True, self.text_color, self.button_color)
+        self.surface = pygame.font.SysFont(None, 33).render(msg, True, self.text_color, self.button_color)
         self.rect = self.surface.get_rect()
         # Получение изначальных координат изображения
         self.rect.centerx = settings.screen_width / 2
