@@ -5,14 +5,20 @@ from time import sleep
 from bullet import Bullet
 from alien import Alien
 
-def check_events(stats):
+def check_events_game(stats):
     # Отслеживание событий клавиатуры и мыши.
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             sys.exit()
         if event.type == pygame.KEYDOWN and event.key == pygame.K_q:
             stats.game_active = False
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+
+def check_events_pause(stats):
+    # Отслеживание событий клавиатуры и мыши.
+    for event in pygame.event.get():
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+            sys.exit()
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_q:
             stats.game_active = True
 
 def collision(rect, wm, hm):

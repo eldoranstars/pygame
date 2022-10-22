@@ -17,10 +17,11 @@ bullets = []
 aliens = []
 
 while True:
-    gf.check_events(stats)
     if not stats.game_active:
+        gf.check_events_pause(stats)
         gf.update_screen(screen, ship, bullets, aliens, stats, play_button)
     if stats.game_active:
+        gf.check_events_game(stats)
         gf.update_aliens(screen, aliens, ship, stats)
         gf.update_bullets(settings, bullets, aliens)
         gf.update_fleet(settings, screen, aliens)

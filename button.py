@@ -15,5 +15,4 @@ class Button():
 
     def blitme(self):
         # Вывод изображения на экран
-        # self.screen.fill(self.button_color, self.rect)
         self.screen.blit(self.surface, self.rect)

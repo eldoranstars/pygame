@@ -1,5 +1,6 @@
 class GameStats():
     def __init__(self, settings):
+        # Атрибуты класса
         self.settings = settings
         self.reset_stats()
         self.game_active = False
