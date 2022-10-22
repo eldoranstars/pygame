@@ -18,7 +18,3 @@ class Settings():
         # Параметры корабля
         self.ship_limit = 0
         self.ship_speed_factor = 5
-        # Параметры текста
-        self.text_color = (0, 0, 0)
-        self.text_center = self.screen_width / 2
-        self.text_bottom = self.screen_height - 20

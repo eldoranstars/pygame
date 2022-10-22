@@ -29,12 +29,12 @@ def update_bullets(settings, bullets, aliens):
     # Вывод изображений на экран.
     for bullet in bullets:
         bullet.update()
-        if bullet.rect.bottom < (bullet.start_position - settings.screen_height):
-            bullets.remove(bullet)
         for alien in aliens:
             if alien.rect.contains(bullet.rect):
                 aliens.remove(alien)
                 bullets.remove(bullet)
+        if bullet.rect.bottom < (bullet.start_position - settings.screen_height):
+            bullets.remove(bullet)
 
 def update_aliens(screen, aliens, ship, stats):
     # Вывод изображений на экран.
@@ -64,7 +64,7 @@ def update_screen(screen, ship, bullets, aliens, stats, play_button):
     for alien in aliens:
         alien.blitme()
     if not stats.game_active:
-        play_button.draw_button()
+        play_button.blitme()
     pygame.display.update()
 
 def update_player(settings, screen, ship, bullets):

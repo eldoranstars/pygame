@@ -10,7 +10,7 @@ pygame.init()
 pygame.display.set_caption("Alien Invasion")
 settings = Settings()
 screen = Screen(settings)
-play_button = Button(settings, screen, "Play")
+play_button = Button(settings, screen, "start")
 stats = GameStats(settings)
 ship = Ship(screen)
 bullets = []
