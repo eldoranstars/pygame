@@ -5,7 +5,7 @@ class Alien():
     def __init__(self, settings, screen):
         # Атрибуты класса
         self.screen = screen.surface
-        self.speed_factor = settings.alien_speed_factor * random.randrange(1,3)
+        self.speed_factor = settings.alien_speed_factor * random.randrange(1,5)
         self.move_direction = random.randrange(0,9)
         # Загрузка изображения и получение прямоугольника
         self.surface = pygame.image.load('images/invader.png')

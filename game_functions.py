@@ -39,11 +39,12 @@ def update_aliens(screen, aliens, ship, stats):
         alien.update()
         if not screen.rect.colliderect(alien.rect):
             aliens.remove(alien)
-        if collision(ship.rect, 0.6, 0.9).colliderect(collision(alien.rect, 0.8, 0.8)):
+        if collision(ship.rect, 0.6, 0.9).colliderect(collision(alien.rect, 0.8, 0.6)):
+            sleep(1)
             stats.ships_left -= 1
             ship.rect.centerx = screen.rect.centerx
             ship.rect.bottom = screen.rect.bottom
-            sleep(1)
+            aliens.clear()
 
 def update_screen(settings, screen, ship, bullets, aliens):
     # Вывод изображений на экран.
@@ -76,6 +77,6 @@ def update_player(settings, screen, ship, bullets):
 
 def update_fleet(settings, screen, aliens):
     # Создание противника и размещение его в ряду.
-    if random.randrange(1,100) > 57 and len(aliens) < settings.aliens_allowed:
+    if random.randrange(1,100) > 92 and len(aliens) < settings.aliens_allowed:
         alien = Alien(settings, screen)
         aliens.append(alien)
