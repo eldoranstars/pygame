@@ -5,7 +5,7 @@ class Text():
         # Атрибуты класса
         self.screen = screen.surface
         # Загрузка изображения и получение прямоугольника
-        self.surface = pygame.font.Font(None, 20).render(textString, True, settings.text_color)
+        self.surface = pygame.font.SysFont(None, 20).render(textString, True, settings.text_color)
         self.rect = self.surface.get_rect()
         # Получение изначальных координат изображения
         self.rect.centerx = settings.text_center

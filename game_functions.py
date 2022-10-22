@@ -4,13 +4,16 @@ import random
 from time import sleep
 from bullet import Bullet
 from alien import Alien
-from text import Text
 
-def check_events():
+def check_events(stats):
     # Отслеживание событий клавиатуры и мыши.
     for event in pygame.event.get():
-        if event.type == pygame.QUIT:
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             sys.exit()
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_q:
+            stats.game_active = False
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+            stats.game_active = True
 
 def collision(rect, wm, hm):
     # Получаем дополнительный прямоугольник для обработки коллизий.
@@ -41,12 +44,18 @@ def update_aliens(screen, aliens, ship, stats):
             aliens.remove(alien)
         if collision(ship.rect, 0.6, 0.9).colliderect(collision(alien.rect, 0.8, 0.6)):
             sleep(1)
-            stats.ships_left -= 1
-            ship.rect.centerx = screen.rect.centerx
-            ship.rect.bottom = screen.rect.bottom
-            aliens.clear()
+            if stats.ships_left > 0:
+                stats.ships_left -= 1
+                ship.rect.centerx = screen.rect.centerx
+                ship.rect.bottom = screen.rect.bottom
+                aliens.clear()
+            else:
+                stats.game_active = False
+                ship.rect.centerx = screen.rect.centerx
+                ship.rect.bottom = screen.rect.bottom
+                aliens.clear()
 
-def update_screen(settings, screen, ship, bullets, aliens):
+def update_screen(screen, ship, bullets, aliens, stats, play_button):
     # Вывод изображений на экран.
     screen.blitme()
     ship.blitme()
@@ -54,15 +63,13 @@ def update_screen(settings, screen, ship, bullets, aliens):
         bullet.blitme()
     for alien in aliens:
         alien.blitme()
-        if collision(ship.rect, 0.6, 0.9).colliderect(collision(alien.rect, 0.8, 0.8)):
-            Text(settings, screen, 'Collide with alien').blitme()
+    if not stats.game_active:
+        play_button.draw_button()
     pygame.display.update()
 
 def update_player(settings, screen, ship, bullets):
     # Отслеживание нажатий клавиатуры и мыши.
     key = pygame.key.get_pressed()
-    if key[pygame.K_ESCAPE] == 1:
-        sys.exit()
     if key[pygame.K_RIGHT] == 1 and ship.rect.right < settings.screen_width:
         ship.rect.centerx += settings.ship_speed_factor
     if key[pygame.K_LEFT] == 1 and ship.rect.left > 0:
