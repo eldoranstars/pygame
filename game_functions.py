@@ -71,6 +71,7 @@ def update_aliens(aliens, bullets, stats):
             else:
                 stats.reset_stats()
                 stats.game_active = False
+                settings.reset_settings()
                 ship.rect.centerx = screen.rect.centerx
                 ship.rect.bottom = screen.rect.bottom
                 aliens.clear()
@@ -105,6 +106,6 @@ def update_player(bullets):
 
 def update_fleet(aliens):
     # Создание противника и размещение его в ряду.
-    if random.randrange(1,100) > 92 and len(aliens) < settings.aliens_allowed:
+    if random.randrange(1,101) < settings.alien_chance and len(aliens) < settings.alien_allowed:
         alien = Alien(settings, screen)
         aliens.append(alien)
