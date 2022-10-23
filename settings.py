@@ -17,10 +17,12 @@ class Settings():
         self.alien_sf_max = 5
         self.alien_allowed = 15
         # Динамические параметры игры
+        self.ship_limit = 1
         self.reset_settings()
 
     def reset_settings(self):
         # Сброс параметров игры
+        self.ships_left = self.ship_limit
         self.ship_speed_factor = 5
         self.alien_chance = 5
         self.score = 0

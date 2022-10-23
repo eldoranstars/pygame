@@ -14,8 +14,8 @@ bullets = []
 settings = Settings()
 screen = Screen(settings)
 ship = Ship(screen)
-start = Text(screen, settings, "START", screen.rect.centerx, screen.rect.bottom - 20)
-score = Text(screen, settings, "SCORE: {}", screen.rect.centerx, screen.rect.bottom)
+start = Text(screen, "START", screen.rect.centerx, screen.rect.bottom - 20)
+score = Text(screen, "SCORE: {:,}", screen.rect.centerx, screen.rect.bottom)
 
 def check_events(stats):
     # Отслеживание событий клавиатуры и мыши.
@@ -50,12 +50,12 @@ def update_bullets():
             if alien.rect.contains(bullet.rect):
                 aliens.remove(alien)
                 settings.score += 1
-                score.update_text()
+                score.update_text(settings.score)
                 try:
                     bullets.remove(bullet)
                 # если пуля попала сразу в оба объекта
-                except:
-                    ValueError
+                except ValueError:
+                    print('double kill!')
         if bullet.rect.bottom < (bullet.start_position - settings.screen_height):
             bullets.remove(bullet)
 
@@ -67,17 +67,16 @@ def update_aliens(stats):
             aliens.remove(alien)
         if collision(ship.rect, 0.6, 0.9).colliderect(collision(alien.rect, 0.8, 0.6)):
             sleep(1)
-            if stats.ships_left > 0:
-                stats.ships_left -= 1
+            if settings.ships_left > 0:
+                settings.ships_left -= 1
                 ship.rect.centerx = screen.rect.centerx
                 ship.rect.bottom = screen.rect.bottom
                 aliens.clear()
                 bullets.clear()
             else:
-                stats.reset_stats()
                 stats.game_active = False
                 settings.reset_settings()
-                score.update_text()
+                score.update_text(settings.score)
                 ship.rect.centerx = screen.rect.centerx
                 ship.rect.bottom = screen.rect.bottom
                 aliens.clear()
