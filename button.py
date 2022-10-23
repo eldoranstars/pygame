@@ -1,7 +1,8 @@
 import pygame
+pygame.font.init()
 
 class Button():
-    def __init__(self, screen, msg):
+    def __init__(self, screen, msg, posx, posy):
         # Атрибуты класса
         self.screen = screen.surface
         self.button_color = (150, 150, 255)
@@ -10,8 +11,8 @@ class Button():
         self.surface = pygame.font.SysFont(None, 33).render(msg, True, self.text_color, self.button_color)
         self.rect = self.surface.get_rect()
         # Получение изначальных координат изображения
-        self.rect.centerx = screen.rect.width / 2
-        self.rect.bottom = screen.rect.bottom - 20
+        self.rect.centerx = posx
+        self.rect.bottom = posy
 
     def blitme(self):
         # Вывод изображения на экран

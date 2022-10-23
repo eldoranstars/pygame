@@ -1,30 +1,19 @@
 import pygame
 import game_functions as gf
-from settings import Settings
-from screen import Screen
-from ship import Ship
 from stats import GameStats
-from button import Button
 
 pygame.init()
 pygame.mouse.set_visible(False)
 pygame.display.set_caption("Alien Invasion")
-settings = Settings()
-screen = Screen(settings)
-stats = GameStats(settings)
-ship = Ship(screen)
-buttons = [Button(screen, "start")]
-bullets = []
+stats = GameStats()
 aliens = []
+bullets = []
 
 while True:
     gf.check_events(stats)
-    if not stats.game_status:
-        gf.update_screen(screen, ship, bullets, aliens, stats, buttons)
-    if stats.game_status:
-        gf.check_events(stats)
-        gf.update_aliens(screen, aliens, ship, stats, bullets)
-        gf.update_bullets(settings, bullets, aliens)
-        gf.update_fleet(settings, screen, aliens)
-        gf.update_player(settings, screen, ship, bullets)
-        gf.update_screen(screen, ship, bullets, aliens, stats, buttons)
+    gf.update_screen(aliens, bullets, stats)
+    if stats.game_active:
+        gf.update_aliens(aliens, bullets, stats)
+        gf.update_bullets(aliens, bullets)
+        gf.update_fleet(aliens)
+        gf.update_player(bullets)
