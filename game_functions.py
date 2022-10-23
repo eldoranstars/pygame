@@ -5,21 +5,20 @@ from time import sleep
 from bullet import Bullet
 from alien import Alien
 
-def check_events_game(stats):
+def check_events(stats):
     # Отслеживание событий клавиатуры и мыши.
-    for event in pygame.event.get():
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-            sys.exit()
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_q:
-            stats.game_active = False
-
-def check_events_pause(stats):
-    # Отслеживание событий клавиатуры и мыши.
-    for event in pygame.event.get():
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-            sys.exit()
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_q:
-            stats.game_active = True
+    if stats.game_status:
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                sys.exit()
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_q:
+                stats.game_status = False
+    if not stats.game_status:
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                sys.exit()
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_q:
+                stats.game_status = True
 
 def collision(rect, wm, hm):
     # Получаем дополнительный прямоугольник для обработки коллизий.
@@ -46,7 +45,7 @@ def update_bullets(settings, bullets, aliens):
         if bullet.rect.bottom < (bullet.start_position - settings.screen_height):
             bullets.remove(bullet)
 
-def update_aliens(screen, aliens, ship, stats):
+def update_aliens(screen, aliens, ship, stats, bullets):
     # Вывод изображений на экран.
     for alien in aliens:
         alien.update()
@@ -59,13 +58,16 @@ def update_aliens(screen, aliens, ship, stats):
                 ship.rect.centerx = screen.rect.centerx
                 ship.rect.bottom = screen.rect.bottom
                 aliens.clear()
+                bullets.clear()
             else:
-                stats.game_active = False
+                stats.reset_stats()
+                stats.game_status = False
                 ship.rect.centerx = screen.rect.centerx
                 ship.rect.bottom = screen.rect.bottom
                 aliens.clear()
+                bullets.clear()
 
-def update_screen(screen, ship, bullets, aliens, stats, play_button):
+def update_screen(screen, ship, bullets, aliens, stats, buttons):
     # Вывод изображений на экран.
     screen.blitme()
     ship.blitme()
@@ -73,8 +75,9 @@ def update_screen(screen, ship, bullets, aliens, stats, play_button):
         bullet.blitme()
     for alien in aliens:
         alien.blitme()
-    if not stats.game_active:
-        play_button.blitme()
+    if not stats.game_status:
+        for button in buttons:
+            button.blitme()
     pygame.display.update()
 
 def update_player(settings, screen, ship, bullets):
@@ -89,8 +92,8 @@ def update_player(settings, screen, ship, bullets):
     if key[pygame.K_DOWN] == 1 and ship.rect.bottom < settings.screen_height:
         ship.rect.centery += settings.ship_speed_factor
     if key[pygame.K_SPACE] == 1 and len(bullets) < settings.bullets_allowed:
-        new_bullet = Bullet(settings, screen, ship)
-        bullets.append(new_bullet)
+        bullet = Bullet(settings, screen, ship)
+        bullets.append(bullet)
 
 def update_fleet(settings, screen, aliens):
     # Создание противника и размещение его в ряду.

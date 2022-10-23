@@ -16,5 +16,5 @@ class Settings():
         self.aliens_allowed = 15
         self.alien_speed_factor = 1
         # Параметры корабля
-        self.ship_limit = 0
+        self.ship_limit = 1
         self.ship_speed_factor = 5
