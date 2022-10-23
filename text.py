@@ -2,14 +2,14 @@ import pygame
 pygame.font.init()
 
 class Text():
-    def __init__(self, screen, msg, posx, posy):
+    def __init__(self, screen, settings, msg, posx, posy):
         # Атрибуты класса
         self.screen = screen.surface
         self.msg = msg
         self.button_color = (150, 150, 255)
         self.text_color = (0, 0, 0)
-        self.score = 0
-        self.score_msg = msg.format(self.score)
+        self.settings = settings
+        self.score_msg = msg.format(self.settings.score)
         # Загрузка изображения и получение прямоугольника
         self.font = pygame.font.SysFont(None, 33)
         self.surface = self.font.render(self.score_msg, True, self.text_color, self.button_color)
@@ -20,7 +20,7 @@ class Text():
 
     def update_text(self):
         # Обновление изображения
-        self.score += 1
+        self.score = self.settings.score
         self.score_msg = self.msg.format(self.score)
         self.surface = self.font.render(self.score_msg, True, self.text_color, self.button_color)
 

@@ -7,15 +7,15 @@ from alien import Alien
 from settings import Settings
 from screen import Screen
 from ship import Ship
-from button import Text
+from text import Text
 
 aliens = []
 bullets = []
 settings = Settings()
 screen = Screen(settings)
 ship = Ship(screen)
-start = Text(screen, "START", screen.rect.centerx, screen.rect.bottom - 20)
-score = Text(screen, "SCORE: {}", screen.rect.centerx, screen.rect.bottom)
+start = Text(screen, settings, "START", screen.rect.centerx, screen.rect.bottom - 20)
+score = Text(screen, settings, "SCORE: {}", screen.rect.centerx, screen.rect.bottom)
 
 def check_events(stats):
     # Отслеживание событий клавиатуры и мыши.
@@ -49,6 +49,7 @@ def update_bullets():
         for alien in aliens:
             if alien.rect.contains(bullet.rect):
                 aliens.remove(alien)
+                settings.score += 1
                 score.update_text()
                 try:
                     bullets.remove(bullet)
@@ -76,6 +77,7 @@ def update_aliens(stats):
                 stats.reset_stats()
                 stats.game_active = False
                 settings.reset_settings()
+                score.update_text()
                 ship.rect.centerx = screen.rect.centerx
                 ship.rect.bottom = screen.rect.bottom
                 aliens.clear()
