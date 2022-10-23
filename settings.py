@@ -23,3 +23,4 @@ class Settings():
         # Сброс параметров игры
         self.ship_speed_factor = 5
         self.alien_chance = 5
+        self.score = 0

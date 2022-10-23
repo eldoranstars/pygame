@@ -7,12 +7,15 @@ from alien import Alien
 from settings import Settings
 from screen import Screen
 from ship import Ship
-from button import Button
+from button import Text
 
+aliens = []
+bullets = []
 settings = Settings()
 screen = Screen(settings)
 ship = Ship(screen)
-start = Button(screen, "START", screen.rect.centerx, screen.rect.bottom - 20)
+start = Text(screen, "START", screen.rect.centerx, screen.rect.bottom - 20)
+score = Text(screen, "SCORE: {}", screen.rect.centerx, screen.rect.bottom)
 
 def check_events(stats):
     # Отслеживание событий клавиатуры и мыши.
@@ -35,26 +38,27 @@ def collision(rect, wm, hm):
     collision.center = rect.center
     return collision
 
-def collision_test(screen, object, wm, hm):
+def collision_test(object, wm, hm):
     # Вывод коллизий на экран.
     screen.surface.blit(pygame.Surface((collision(object.rect, wm, hm).width,collision(object.rect, wm, hm).height)), collision(object.rect, wm, hm))
 
-def update_bullets(aliens, bullets):
+def update_bullets():
     # Вывод изображений на экран.
     for bullet in bullets:
         bullet.update()
         for alien in aliens:
             if alien.rect.contains(bullet.rect):
                 aliens.remove(alien)
+                score.update_text()
                 try:
                     bullets.remove(bullet)
-                # если пуля попала сразу в два объекта
+                # если пуля попала сразу в оба объекта
                 except:
                     ValueError
         if bullet.rect.bottom < (bullet.start_position - settings.screen_height):
             bullets.remove(bullet)
 
-def update_aliens(aliens, bullets, stats):
+def update_aliens(stats):
     # Вывод изображений на экран.
     for alien in aliens:
         alien.update()
@@ -77,7 +81,7 @@ def update_aliens(aliens, bullets, stats):
                 aliens.clear()
                 bullets.clear()
 
-def update_screen(aliens, bullets, stats):
+def update_screen(stats):
     # Вывод изображений на экран.
     screen.blitme()
     ship.blitme()
@@ -87,9 +91,10 @@ def update_screen(aliens, bullets, stats):
         alien.blitme()
     if not stats.game_active:
         start.blitme()
+        score.blitme()
     pygame.display.update()
 
-def update_player(bullets):
+def update_player():
     # Отслеживание нажатий клавиатуры и мыши.
     key = pygame.key.get_pressed()
     if key[pygame.K_RIGHT] == 1 and ship.rect.right < settings.screen_width:
@@ -104,7 +109,7 @@ def update_player(bullets):
         bullet = Bullet(settings, screen, ship)
         bullets.append(bullet)
 
-def update_fleet(aliens):
+def update_fleet():
     # Создание противника и размещение его в ряду.
     if random.randrange(1,101) < settings.alien_chance and len(aliens) < settings.alien_allowed:
         alien = Alien(settings, screen)
