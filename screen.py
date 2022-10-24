@@ -10,5 +10,5 @@ class Screen():
 
     def blitme(self):
         # Вывод изображения на экран
-        # self.surface.fill(self.settings.bg_color)
-        self.surface.blit(self.settings.bg_color, self.rect)
+        # self.surface.fill(self.settings.screen_color)
+        self.surface.blit(self.settings.screen_color, self.rect)
