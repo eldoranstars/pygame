@@ -13,5 +13,7 @@ while True:
     if stats.game_active:
         gf.update_aliens(stats)
         gf.update_bullets()
-        gf.update_fleet()
         gf.update_player()
+        gf.update_removed_stars()
+        gf.update_stars()
+        gf.update_fleet()

@@ -2,18 +2,18 @@ import sys
 import pygame
 import random
 from time import sleep
-from bullet import Bullet
 from alien import Alien
+from bullet import Bullet
 from settings import Settings
 from screen import Screen
 from ship import Ship
+from star import Star
 from text import Text
 
-aliens = []
-bullets = []
 settings = Settings()
 screen = Screen(settings)
 ship = Ship(screen)
+star = Star(settings, screen)
 start = Text(screen, "START", screen.rect.centerx, screen.rect.centery - 40)
 score = Text(screen, "SCORE: {:,}", screen.rect.centerx, screen.rect.centery)
 record = Text(screen, "RECORD: {:,}", screen.rect.centerx, screen.rect.centery - 20)
@@ -43,38 +43,47 @@ def collision_test(object, wm, hm):
     # Вывод коллизий на экран.
     screen.surface.blit(pygame.Surface((collision(object.rect, wm, hm).width,collision(object.rect, wm, hm).height)), collision(object.rect, wm, hm))
 
+def update_removed_stars():
+    # Вывод изображений на экран.
+    for star in settings.removed_stars:
+        star.update()
+        if not screen.rect.colliderect(star.rect):
+            settings.removed_stars.remove(star)
+
 def update_bullets():
     # Вывод изображений на экран.
-    for bullet in bullets:
+    for bullet in settings.bullets:
         bullet.update()
-        for alien in aliens:
+        for alien in settings.aliens:
             if alien.rect.contains(bullet.rect):
-                aliens.remove(alien)
+                settings.aliens.remove(alien)
                 settings.score += 1
                 score.update_text(settings.score)
                 record.update_text(settings.record)
                 try:
-                    bullets.remove(bullet)
+                    settings.bullets.remove(bullet)
                 # если пуля попала сразу в оба объекта
                 except ValueError:
                     print('double kill!')
         if bullet.rect.bottom < (bullet.start_position - settings.screen_height):
-            bullets.remove(bullet)
+            settings.bullets.remove(bullet)
 
 def update_aliens(stats):
     # Вывод изображений на экран.
-    for alien in aliens:
+    for alien in settings.aliens:
         alien.update()
         if not screen.rect.colliderect(alien.rect):
-            aliens.remove(alien)
+            settings.aliens.remove(alien)
         if collision(ship.rect, 0.6, 0.9).colliderect(collision(alien.rect, 0.8, 0.6)):
             sleep(1)
-            if settings.ships_left > 0:
-                settings.ships_left -= 1
+            if settings.star_left > 0:
+                settings.star_left -= 1
+                removed_star = settings.stars.pop(-1)
+                settings.removed_stars.append(removed_star)
                 ship.rect.centerx = screen.rect.centerx
                 ship.rect.bottom = screen.rect.bottom
-                aliens.clear()
-                bullets.clear()
+                settings.aliens.clear()
+                settings.bullets.clear()
             else:
                 stats.game_active = False
                 if settings.score > settings.record:
@@ -84,16 +93,20 @@ def update_aliens(stats):
                 record.update_text(settings.record)
                 ship.rect.centerx = screen.rect.centerx
                 ship.rect.bottom = screen.rect.bottom
-                aliens.clear()
-                bullets.clear()
+                settings.aliens.clear()
+                settings.bullets.clear()
 
 def update_screen(stats):
     # Вывод изображений на экран.
     screen.blitme()
+    for star in settings.stars:
+        star.blitme()
+    for star in settings.removed_stars:
+        star.blitme()
     ship.blitme()
-    for bullet in bullets:
+    for bullet in settings.bullets:
         bullet.blitme()
-    for alien in aliens:
+    for alien in settings.aliens:
         alien.blitme()
     if not stats.game_active:
         start.blitme()
@@ -112,12 +125,23 @@ def update_player():
         ship.rect.centery -= settings.ship_speed_factor
     if key[pygame.K_DOWN] == 1 and ship.rect.bottom < settings.screen_height:
         ship.rect.centery += settings.ship_speed_factor
-    if key[pygame.K_SPACE] == 1 and len(bullets) < settings.bullets_allowed:
+    if key[pygame.K_SPACE] == 1 and len(settings.bullets) < settings.bullet_allowed:
         bullet = Bullet(settings, screen, ship)
-        bullets.append(bullet)
+        settings.bullets.append(bullet)
 
 def update_fleet():
-    # Создание противника и размещение его в ряду.
-    if random.randrange(1,101) < settings.alien_chance and len(aliens) < settings.alien_allowed:
+    # Создание объектов в списке
+    if random.randrange(1,101) < settings.alien_chance and len(settings.aliens) < settings.alien_allowed:
         alien = Alien(settings, screen)
-        aliens.append(alien)
+        settings.aliens.append(alien)
+
+def update_stars():
+    # Создание объектов в списке
+    if len(settings.stars) < settings.star_left:
+        star = Star(settings, screen)
+        settings.stars.append(star)
+    for star in settings.removed_stars:
+        if collision(ship.rect, 0.6, 0.9).colliderect(collision(star.rect, 0.6, 0.6)):
+            settings.star_left += 1
+            settings.removed_stars.remove(star)
+            settings.stars.append(star)

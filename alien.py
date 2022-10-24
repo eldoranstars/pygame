@@ -8,7 +8,7 @@ class Alien():
         self.speed_factor = random.randrange(settings.alien_sf_min, settings.alien_sf_max)
         self.move_direction = random.randrange(0,9)
         # Загрузка изображения и получение прямоугольника
-        self.surface = pygame.image.load('images/invader.png')
+        self.surface = settings.alien_color
         self.rect = self.surface.get_rect()
         # Получение изначальных координат изображения
         self.rect.centerx = random.randrange(self.rect.width, settings.screen_width, self.rect.width)
@@ -18,7 +18,7 @@ class Alien():
         # Обновление координат изображения
         if self.move_direction < 3:
             self.rect.centerx += self.speed_factor
-        if self.move_direction > 6:
+        if self.move_direction > 5:
             self.rect.centerx -= self.speed_factor
         self.rect.centery += self.speed_factor
 
