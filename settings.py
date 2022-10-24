@@ -2,6 +2,9 @@ import pygame
 
 class Settings():
     def __init__(self):
+        # Параметры игры
+        self.ship_limit = 1
+        self.record = 0
         # Параметры экрана
         self.screen_width = 480
         self.screen_height = 720
@@ -17,11 +20,10 @@ class Settings():
         self.alien_sf_max = 5
         self.alien_allowed = 15
         # Динамические параметры игры
-        self.ship_limit = 1
         self.reset_settings()
 
     def reset_settings(self):
-        # Сброс параметров игры
+        # Сбросить параметры игры
         self.ships_left = self.ship_limit
         self.ship_speed_factor = 5
         self.alien_chance = 5

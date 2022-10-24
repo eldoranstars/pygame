@@ -14,8 +14,9 @@ bullets = []
 settings = Settings()
 screen = Screen(settings)
 ship = Ship(screen)
-start = Text(screen, "START", screen.rect.centerx, screen.rect.bottom - 20)
-score = Text(screen, "SCORE: {:,}", screen.rect.centerx, screen.rect.bottom)
+start = Text(screen, "START", screen.rect.centerx, screen.rect.centery - 40)
+score = Text(screen, "SCORE: {:,}", screen.rect.centerx, screen.rect.centery)
+record = Text(screen, "RECORD: {:,}", screen.rect.centerx, screen.rect.centery - 20)
 
 def check_events(stats):
     # Отслеживание событий клавиатуры и мыши.
@@ -51,6 +52,7 @@ def update_bullets():
                 aliens.remove(alien)
                 settings.score += 1
                 score.update_text(settings.score)
+                record.update_text(settings.record)
                 try:
                     bullets.remove(bullet)
                 # если пуля попала сразу в оба объекта
@@ -75,8 +77,11 @@ def update_aliens(stats):
                 bullets.clear()
             else:
                 stats.game_active = False
+                if settings.score > settings.record:
+                    settings.record = settings.score
                 settings.reset_settings()
                 score.update_text(settings.score)
+                record.update_text(settings.record)
                 ship.rect.centerx = screen.rect.centerx
                 ship.rect.bottom = screen.rect.bottom
                 aliens.clear()
@@ -93,6 +98,7 @@ def update_screen(stats):
     if not stats.game_active:
         start.blitme()
         score.blitme()
+        record.blitme()
     pygame.display.update()
 
 def update_player():
