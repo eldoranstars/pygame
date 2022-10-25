@@ -2,7 +2,7 @@ class Bullet():
     def __init__(self, screen, settings, ship):
         # Атрибуты класса
         self.screen = screen.surface
-        self.speed_factor = settings.bullet_speed_factor
+        self.speed_factor = settings.bullet_sf
         # Загрузка изображения и получение прямоугольника
         self.surface = settings.bullet_surface
         self.surface.fill(settings.bullet_color)

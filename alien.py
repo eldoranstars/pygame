@@ -4,7 +4,6 @@ class Alien():
     def __init__(self, screen, settings):
         # Атрибуты класса
         self.screen = screen.surface
-        self.settings = settings
         self.speed_factor = random.randrange(settings.alien_sf_min, settings.alien_sf_max)
         self.move_direction = random.randrange(0,9)
         # Загрузка изображения и получение прямоугольника

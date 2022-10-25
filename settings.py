@@ -13,8 +13,9 @@ class Settings():
         # Параметры пули
         self.bullet_width = 3
         self.bullet_height = 9
-        self.bullet_allowed = 10
-        self.bullet_speed_factor = 15
+        self.bullet_limit = 1
+        self.bullet_sf = 15
+        self.reload_bullet_time = 1000
         self.bullet_color = (60, 60, 60)
         # Параметры изображений
         self.screen_bg = pygame.image.load('images/space.png')
@@ -26,26 +27,29 @@ class Settings():
         self.asteroid_blue = pygame.image.load('images/asteroid-blue.png')
         self.screen_surface = pygame.display.set_mode((self.screen_width, self.screen_height), pygame.SCALED, vsync=1)
         self.bullet_surface = pygame.Surface((self.bullet_width, self.bullet_height))
-        self.environment_list = [self.asteroid_pink, self.asteroid_grey, self.asteroid_blue]
+        self.asteroid_list = [self.asteroid_pink, self.asteroid_grey, self.asteroid_blue]
         # Параметры чужих
         self.alien_sf_min = 1
         self.alien_sf_max = 5
         self.alien_chance = 10
         self.alien_allowed = 15
         # Параметры среды
-        self.environment_chance = 10
-        self.environment_allowed = 15
+        self.asteroid_chance = 10
+        self.asteroid_allowed = 15
         # Динамические параметры игры
         self.reset_settings()
 
     def reset_settings(self):
         # Сбросить параметры игры
         self.aliens = []
-        self.environments = []
+        self.asteroids = []
         self.bullets = []
         self.stars = []
         self.removed_stars = []
         self.score = 0
         self.ship_sf = 4
-        self.environment_sf = self.ship_sf + 1
+        self.last_bullet_time = 0
+        self.reload_bullet = False
+        self.asteroid_sf = self.ship_sf + 1
         self.star_left = self.star_limit
+        self.bullet_left = self.bullet_limit
