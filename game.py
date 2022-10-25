@@ -9,11 +9,13 @@ stats = GameStats()
 
 while True:
     gf.check_events(stats)
-    gf.update_screen(stats)
+    gf.blit_screen(stats)
     if stats.game_active:
         gf.update_aliens(stats)
         gf.update_bullets()
         gf.update_player()
         gf.update_removed_stars()
-        gf.update_stars()
-        gf.update_fleet()
+        gf.update_environments()
+        gf.append_star()
+        gf.append_alien()
+        gf.append_environment()
