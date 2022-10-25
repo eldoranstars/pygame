@@ -1,11 +1,9 @@
-import pygame
-
 class Ship():
-    def __init__(self, screen):
+    def __init__(self, screen, settings):
         # Атрибуты класса
         self.screen = screen.surface
         # Загрузка изображения и получение прямоугольника
-        self.surface = pygame.image.load('images/destroyer.png')
+        self.surface = settings.ship_surface
         self.rect = self.surface.get_rect()
         # Получение изначальных координат изображения
         self.rect.centerx = screen.rect.centerx

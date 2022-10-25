@@ -12,8 +12,8 @@ from text import Text
 
 settings = Settings()
 screen = Screen(settings)
-ship = Ship(screen)
-star = Star(settings, screen)
+ship = Ship(screen, settings)
+star = Star(screen, settings)
 start = Text(screen, "START", screen.rect.centerx, screen.rect.centery - 40)
 score = Text(screen, "SCORE: {:,}", screen.rect.centerx, screen.rect.centery)
 record = Text(screen, "RECORD: {:,}", screen.rect.centerx, screen.rect.centery - 20)
@@ -126,19 +126,19 @@ def update_player():
     if key[pygame.K_DOWN] == 1 and ship.rect.bottom < settings.screen_height:
         ship.rect.centery += settings.ship_speed_factor
     if key[pygame.K_SPACE] == 1 and len(settings.bullets) < settings.bullet_allowed:
-        bullet = Bullet(settings, screen, ship)
+        bullet = Bullet(screen, settings, ship)
         settings.bullets.append(bullet)
 
 def update_fleet():
     # Создание объектов в списке
     if random.randrange(1,101) < settings.alien_chance and len(settings.aliens) < settings.alien_allowed:
-        alien = Alien(settings, screen)
+        alien = Alien(screen, settings)
         settings.aliens.append(alien)
 
 def update_stars():
     # Создание объектов в списке
     if len(settings.stars) < settings.star_left:
-        star = Star(settings, screen)
+        star = Star(screen, settings)
         settings.stars.append(star)
     for star in settings.removed_stars:
         if collision(ship.rect, 0.6, 0.9).colliderect(collision(star.rect, 0.6, 0.6)):

@@ -1,8 +1,7 @@
-import pygame
 import random
 
 class Star():
-    def __init__(self, settings, screen):
+    def __init__(self, screen, settings):
         # Атрибуты класса
         self.screen = screen.surface
         self.speed_factor = settings.star_speedf

@@ -1,12 +1,10 @@
-import pygame
-
 class Bullet():
-    def __init__(self, settings, screen, ship):
+    def __init__(self, screen, settings, ship):
         # Атрибуты класса
         self.screen = screen.surface
         self.speed_factor = settings.bullet_speed_factor
         # Загрузка изображения и получение прямоугольника
-        self.surface = pygame.Surface((settings.bullet_width,settings.bullet_height))
+        self.surface = settings.bullet_surface
         self.surface.fill(settings.bullet_color)
         self.rect = self.surface.get_rect()
         # Получение изначальных координат изображения
