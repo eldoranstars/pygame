@@ -103,7 +103,15 @@ def update_asteroids():
         if not screen.rect.colliderect(asteroid.rect):
             settings.asteroids.remove(asteroid)
         if collision(asteroid.rect, 0.8, 0.8).collidepoint(ship.rect.midtop):
-            asteroid.change_direction()
+            asteroid.move_down = False
+        if collision(asteroid.rect, 0.8, 0.8).collidepoint(ship.rect.midleft):
+            asteroid.move_left = True
+            asteroid.move_right = False
+            asteroid.move_down = False
+        if collision(asteroid.rect, 0.8, 0.8).collidepoint(ship.rect.midright):
+            asteroid.move_left = False
+            asteroid.move_right = True
+            asteroid.move_down = False
         for alien in settings.aliens:
             if collision(asteroid.rect, 0.8, 0.8).colliderect(collision(alien.rect, 0.8, 0.6)):
                 settings.aliens.remove(alien)

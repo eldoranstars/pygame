@@ -19,4 +19,5 @@ while True:
         gf.update_asteroids()
         gf.append_star()
         gf.append_alien()
+    if stats.game_active and stats.asteroid_active:
         gf.append_asteroid()

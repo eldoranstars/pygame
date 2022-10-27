@@ -18,8 +18,7 @@ class Text():
 
     def update_text(self, score):
         # Обновление изображения
-        self.score = score
-        self.score_msg = self.msg.format(self.score)
+        self.score_msg = self.msg.format(score)
         self.surface = self.font.render(self.score_msg, True, self.text_color, self.button_color)
 
     def blitme(self):

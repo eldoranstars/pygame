@@ -6,8 +6,14 @@ class Asteroid():
         self.screen = screen.surface
         self.settings = settings
         self.speed_factor = settings.asteroid_sf
+        self.move_left = False
+        self.move_right = False
+        self.move_down = True
         self.move_direction = random.randrange(0,9)
-        self.down = True
+        if self.move_direction < 3:
+            self.move_left = True
+        if self.move_direction > 5:
+            self.move_right = True
         # Загрузка изображения и получение прямоугольника
         self.surface = random.choice(settings.asteroid_list)
         self.rect = self.surface.get_rect()
@@ -17,18 +23,14 @@ class Asteroid():
 
     def update(self):
         # Обновление координат изображения
-        if self.move_direction < 3:
-            self.rect.centerx += self.speed_factor
-        if self.move_direction > 5:
+        if self.move_left:
             self.rect.centerx -= self.speed_factor
-        if self.down:
+        if self.move_right:
+            self.rect.centerx += self.speed_factor
+        if self.move_down:
             self.rect.centery += self.speed_factor
         else:
             self.rect.centery -= self.speed_factor
-
-    def change_direction(self):
-        # Обновление координат изображения
-        self.down = False
 
     def blitme(self):
         # Вывод изображения на экран

@@ -31,7 +31,7 @@ class Settings():
         # Параметры чужих
         self.alien_sf_min = 1
         self.alien_sf_max = 5
-        self.alien_chance = 10
+        self.alien_chance = 1
         self.alien_allowed = 15
         # Параметры среды
         self.asteroid_chance = 10
