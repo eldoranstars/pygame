@@ -4,6 +4,7 @@ import pygame
 import random
 from time import sleep
 from invader import Invader
+from ball import Ball
 from bullet import Bullet
 from settings import Settings
 from screen import Screen
@@ -17,8 +18,8 @@ settings = Settings()
 screen = Screen(settings)
 ship = Ship(screen, settings)
 star = Star(screen, settings)
-start = Text(screen, "START", screen.rect.centerx, screen.rect.centery - 40)
-score = Text(screen, "SCORE: {:,}", screen.rect.centerx, screen.rect.centery)
+start = Text(screen, "PAUSE", screen.rect.centerx, screen.rect.centery - 40)
+score = Text(screen, "BOSS ARRIVES: {:,}", screen.rect.centerx, screen.rect.centery)
 record = Text(screen, "RECORD: {:,}", screen.rect.centerx, screen.rect.centery - 20)
 bullet_left_text = Text(screen, "{:,}", ship.rect.centerx, ship.rect.centery, settings.bullet_left)
 
@@ -55,10 +56,11 @@ def update_player():
         settings.bullets.append(bullet)
 
 def reload_bullets():
-    # Перезарядка
-    if settings.bullet_left == 0 and not settings.reload_bullet:
+    # Флаг перезарядки и фиксация времени начала
+    if not settings.reload_bullet and settings.bullet_left == 0:
         settings.reload_bullet = True
         settings.last_bullet_time = pygame.time.get_ticks()
+    # Снятие флага перезарядки на основе дельты времени и пополнение боезапаса
     if settings.reload_bullet and pygame.time.get_ticks() - settings.last_bullet_time > settings.reload_bullet_time:
         settings.reload_bullet = False
         settings.bullet_left = settings.bullet_limit
@@ -74,29 +76,19 @@ def collision_test(object, wm, hm):
     # Вывод коллизий на экран.
     screen.surface.blit(pygame.Surface((collision(object.rect, wm, hm).width,collision(object.rect, wm, hm).height)), collision(object.rect, wm, hm))
 
-def update_removed_stars():
+def update_drop_stars():
     # Обновить расположение объектов на экране.
-    for star in settings.removed_stars:
+    for star in settings.drop_stars:
         star.update()
         if not screen.rect.colliderect(star.rect):
-            settings.removed_stars.remove(star)
+            settings.drop_stars.remove(star)
 
 def update_bullets():
     # Обновить расположение объектов на экране.
     for bullet in settings.bullets:
         bullet.update()
-        if bullet.rect.bottom < (bullet.start_position - settings.screen_height):
+        if not screen.rect.colliderect(bullet.rect):
             settings.bullets.remove(bullet)
-        for invader in settings.invaders:
-            if invader.rect.contains(bullet.rect):
-                settings.invaders.remove(invader)
-                settings.score += 2
-                score.update_text(settings.score)
-                try:
-                    settings.bullets.remove(bullet)
-                # если пуля попала сразу в оба объекта
-                except ValueError:
-                    print('double kill!')
 
 def update_asteroids():
     # Обновить расположение объектов на экране.
@@ -117,8 +109,35 @@ def update_asteroids():
         for invader in settings.invaders:
             if collision(asteroid.rect, 0.8, 0.8).colliderect(collision(invader.rect, 0.8, 0.6)):
                 settings.invaders.remove(invader)
-                settings.score += 2
-                score.update_text(settings.score)
+                settings.score += 3
+                score.update_text(settings.boss_score - settings.score)
+        for ball in settings.balls:
+            if collision(asteroid.rect, 0.8, 0.8).colliderect(collision(ball.rect, 0.7, 0.7)):
+                settings.balls.remove(ball)
+                settings.score += 15
+                score.update_text(settings.boss_score - settings.score)
+
+def reset_after_collision(stats):
+    # Обновить счет и экран после коллизии
+    sleep(1)
+    stats.weapon_active = False
+    stats.asteroid_active = False
+    if len(settings.stars) > 0:
+        settings.star_left -= 1
+        settings.player_hit()
+        bullet_left_text.update_text(settings.bullet_left)
+        drop_star = random.choice(settings.stars)
+        settings.stars.remove(drop_star)
+        settings.drop_stars.append(drop_star)
+    else:
+        stats.game_active = False
+        # score.update_text(settings.boss_score - settings.score)
+        if settings.score > settings.record:
+            settings.record = settings.score
+        record.update_text(settings.record)
+        ship.rect.centerx = screen.rect.centerx
+        ship.rect.bottom = screen.rect.bottom
+        settings.new_game()
 
 def update_invaders(stats):
     # Обновить расположение объектов на экране.
@@ -127,30 +146,49 @@ def update_invaders(stats):
         if not screen.rect.colliderect(invader.rect):
             settings.invaders.remove(invader)
             settings.score += 1
-            score.update_text(settings.score)
+            score.update_text(settings.boss_score - settings.score)
+        for bullet in settings.bullets:
+            if invader.rect.contains(bullet.rect):
+                settings.invaders.remove(invader)
+                settings.score += 3
+                score.update_text(settings.boss_score - settings.score)
+                try:
+                    settings.bullets.remove(bullet)
+                # если пуля попала сразу в оба объекта
+                except: ValueError
         if collision(ship.rect, 0.6, 0.9).colliderect(collision(invader.rect, 0.8, 0.6)):
-            sleep(1)
-            stats.weapon_active = False
-            settings.invaders.clear()
-            settings.bullets.clear()
-            settings.asteroids.clear()
-            settings.ammos.clear()
-            settings.bullet_left = 0
-            bullet_left_text.update_text(settings.bullet_left)
-            if settings.star_left > 0:
-                settings.star_left -= 1
-                removed_star = random.choice(settings.stars)
-                settings.stars.remove(removed_star)
-                settings.removed_stars.append(removed_star)
-            else:
-                stats.game_active = False
-                if settings.score > settings.record:
-                    settings.record = settings.score
-                settings.reset_settings()
-                score.update_text(settings.score)
-                record.update_text(settings.record)
-                ship.rect.centerx = screen.rect.centerx
-                ship.rect.bottom = screen.rect.bottom
+            reset_after_collision(stats)
+
+def update_balls(stats):
+    # Обновить расположение объектов на экране.
+    for ball in settings.balls:
+        ball.update()
+        if not screen.rect.collidepoint(ball.rect.midright):
+            ball.move_left = False
+            ball.move_right = True
+        if not screen.rect.collidepoint(ball.rect.midleft):
+            ball.move_right = False
+            ball.move_left = True
+        if not screen.rect.collidepoint(ball.rect.midbottom):
+            ball.move_down = False
+        if not screen.rect.collidepoint(ball.rect.midtop):
+            ball.move_down = True
+        for bullet in settings.bullets:
+            if ball.rect.contains(bullet.rect):
+                ball.life_left -= 1
+                if ball.life_left == 0:
+                    stats.asteroid_active = True
+                    settings.balls.remove(ball)
+                    settings.ball_chance = 8
+                    settings.ball_chance_reduction = 1
+                    settings.score += 15
+                score.update_text(settings.boss_score - settings.score)
+                try:
+                    settings.bullets.remove(bullet)
+                # если пуля попала сразу в оба объекта
+                except: ValueError
+        if collision(ship.rect, 0.6, 0.9).colliderect(collision(ball.rect, 0.7, 0.7)):
+            reset_after_collision(stats)
 
 def update_ammos(stats):
     # Обновить расположение объектов на экране.
@@ -159,8 +197,10 @@ def update_ammos(stats):
         if not screen.rect.colliderect(ammo.rect):
             settings.ammos.remove(ammo)
         if collision(ship.rect, 0.6, 0.9).colliderect(collision(ammo.rect, 0.6, 0.6)):
-            settings.ammos.clear()
+            settings.ammos.remove(ammo)
             stats.weapon_active = True
+            settings.invader_sf_min = 1
+            settings.invader_sf_max = 8
             settings.bullet_limit = 1
             settings.bullet_left = settings.bullet_limit
             bullet_left_text.update_text(settings.bullet_left)
@@ -172,8 +212,13 @@ def append_invader(stats):
         settings.invaders.append(invader)
         if not stats.weapon_active and settings.invader_sf_min < settings.invader_sf_max - 1:
             settings.invader_sf_min += 0.1
-        if stats.weapon_active and settings.invader_sf_min > 1.1:
-            settings.invader_sf_min -= 0.1
+
+def append_ball():
+    # Создание объектов в списке
+    if random.randrange(0,5000) < settings.ball_chance:
+        ball = Ball(screen, settings)
+        settings.balls.append(ball)
+        settings.ball_chance = settings.ball_chance / settings.ball_chance_reduction
 
 def append_ammo():
     # Создание объектов в списке
@@ -192,10 +237,9 @@ def append_star():
     if len(settings.stars) < settings.star_left:
         star = Star(screen, settings)
         settings.stars.append(star)
-    for star in settings.removed_stars:
+    for star in settings.drop_stars:
         if collision(ship.rect, 0.6, 0.9).colliderect(collision(star.rect, 0.6, 0.6)):
-            settings.star_left += 1
-            settings.removed_stars.remove(star)
+            settings.drop_stars.remove(star)
             settings.stars.append(star)
 
 def blit_screen(stats):
@@ -203,7 +247,7 @@ def blit_screen(stats):
     screen.blitme()
     for star in settings.stars:
         star.blitme()
-    for star in settings.removed_stars:
+    for star in settings.drop_stars:
         star.blitme()
     for asteroid in settings.asteroids:
         asteroid.blitme()
@@ -215,6 +259,8 @@ def blit_screen(stats):
         bullet.blitme()
     for invader in settings.invaders:
         invader.blitme()
+    for ball in settings.balls:
+        ball.blitme()
     if not stats.game_active:
         start.blitme()
         score.blitme()
