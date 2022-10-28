@@ -157,17 +157,22 @@ def update_ammos(stats):
         if not screen.rect.colliderect(ammo.rect):
             settings.ammos.remove(ammo)
         if collision(ship.rect, 0.6, 0.9).colliderect(collision(ammo.rect, 0.6, 0.6)):
+            settings.ammos.clear()
             stats.weapon_active = True
             settings.bullet_limit = 1
             settings.bullet_left = settings.bullet_limit
             bullet_left_text.update_text(settings.bullet_left)
-            settings.ammos.clear()
 
-def append_alien():
+def append_alien(stats):
     # Создание объектов в списке
     if random.randrange(0,100) < settings.alien_chance and len(settings.aliens) < settings.alien_allowed:
         alien = Alien(screen, settings)
         settings.aliens.append(alien)
+        if not stats.weapon_active and settings.alien_sf_min < settings.alien_sf_max - 1:
+            settings.alien_sf_min += 0.1
+        if stats.weapon_active and settings.alien_sf_min > 1.1:
+            settings.alien_sf_min -= 0.1
+            print(settings.alien_sf_min)
 
 def append_ammo():
     # Создание объектов в списке

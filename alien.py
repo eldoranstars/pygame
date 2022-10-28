@@ -4,7 +4,7 @@ class Alien():
     def __init__(self, screen, settings):
         # Атрибуты класса
         self.screen = screen.surface
-        self.speed_factor = random.randrange(settings.alien_sf_min, settings.alien_sf_max)
+        self.speed_factor = random.randrange(int(settings.alien_sf_min), int(settings.alien_sf_max))
         self.move_left = False
         self.move_right = False
         self.move_direction = random.randrange(0,9)

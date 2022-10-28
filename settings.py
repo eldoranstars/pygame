@@ -5,7 +5,8 @@ class Settings():
         # Параметры игры
         self.star_limit = 5
         self.record = 0
-        self.star_speedf = 3
+        self.ship_sf = 4
+        self.star_speedf = self.ship_sf - 1
         # Параметры экрана
         self.screen_width = 480
         self.screen_height = 720
@@ -31,17 +32,17 @@ class Settings():
         self.asteroid_list = [self.asteroid_pink, self.asteroid_grey, self.asteroid_blue]
         # Параметры чужих
         self.alien_sf_min = 1
-        self.alien_sf_max = 5
-        self.alien_chance = 1
-        self.alien_allowed = 15
+        self.alien_sf_max = 9
+        self.alien_chance = 10
+        self.alien_allowed = 25
         # Параметры аммуниции
         self.ammo_sf_min = 1
         self.ammo_sf_max = 2
         self.ammo_chance = 1
-        self.ammo_allowed = 15
+        self.ammo_allowed = 1
         # Параметры среды
-        self.asteroid_chance = 10
-        self.asteroid_allowed = 15
+        self.asteroid_chance = 1
+        self.asteroid_allowed = 25
         # Динамические параметры игры
         self.reset_settings()
 
@@ -54,7 +55,6 @@ class Settings():
         self.stars = []
         self.removed_stars = []
         self.score = 0
-        self.ship_sf = 4
         self.last_bullet_time = 0
         self.reload_bullet = False
         self.asteroid_sf = self.ship_sf + 1

@@ -17,7 +17,7 @@ while True:
         gf.update_removed_stars()
         gf.update_asteroids()
         gf.append_star()
-        gf.append_alien()
+        gf.append_alien(stats)
         if stats.asteroid_active:
             gf.append_asteroid()
         if stats.weapon_active:
