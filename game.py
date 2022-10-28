@@ -4,20 +4,20 @@ from stats import GameStats
 
 pygame.init()
 pygame.mouse.set_visible(False)
-pygame.display.set_caption("Alien Invasion")
+pygame.display.set_caption("invader Invasion")
 stats = GameStats()
 
 while True:
     gf.check_events(stats)
     gf.blit_screen(stats)
     if stats.game_active:
-        gf.update_aliens(stats)
+        gf.update_invaders(stats)
         gf.update_player()
         gf.update_bullets()
         gf.update_removed_stars()
         gf.update_asteroids()
         gf.append_star()
-        gf.append_alien(stats)
+        gf.append_invader(stats)
         if stats.asteroid_active:
             gf.append_asteroid()
         if stats.weapon_active:

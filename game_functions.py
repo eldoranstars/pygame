@@ -3,7 +3,7 @@ import sys
 import pygame
 import random
 from time import sleep
-from alien import Alien
+from invader import Invader
 from bullet import Bullet
 from settings import Settings
 from screen import Screen
@@ -87,10 +87,10 @@ def update_bullets():
         bullet.update()
         if bullet.rect.bottom < (bullet.start_position - settings.screen_height):
             settings.bullets.remove(bullet)
-        for alien in settings.aliens:
-            if alien.rect.contains(bullet.rect):
-                settings.aliens.remove(alien)
-                settings.score += 1
+        for invader in settings.invaders:
+            if invader.rect.contains(bullet.rect):
+                settings.invaders.remove(invader)
+                settings.score += 2
                 score.update_text(settings.score)
                 try:
                     settings.bullets.remove(bullet)
@@ -114,22 +114,24 @@ def update_asteroids():
             asteroid.move_left = False
             asteroid.move_right = True
             asteroid.move_down = False
-        for alien in settings.aliens:
-            if collision(asteroid.rect, 0.8, 0.8).colliderect(collision(alien.rect, 0.8, 0.6)):
-                settings.aliens.remove(alien)
-                settings.score += 1
+        for invader in settings.invaders:
+            if collision(asteroid.rect, 0.8, 0.8).colliderect(collision(invader.rect, 0.8, 0.6)):
+                settings.invaders.remove(invader)
+                settings.score += 2
                 score.update_text(settings.score)
 
-def update_aliens(stats):
+def update_invaders(stats):
     # Обновить расположение объектов на экране.
-    for alien in settings.aliens:
-        alien.update()
-        if not screen.rect.colliderect(alien.rect):
-            settings.aliens.remove(alien)
-        if collision(ship.rect, 0.6, 0.9).colliderect(collision(alien.rect, 0.8, 0.6)):
+    for invader in settings.invaders:
+        invader.update()
+        if not screen.rect.colliderect(invader.rect):
+            settings.invaders.remove(invader)
+            settings.score += 1
+            score.update_text(settings.score)
+        if collision(ship.rect, 0.6, 0.9).colliderect(collision(invader.rect, 0.8, 0.6)):
             sleep(1)
             stats.weapon_active = False
-            settings.aliens.clear()
+            settings.invaders.clear()
             settings.bullets.clear()
             settings.asteroids.clear()
             settings.ammos.clear()
@@ -163,16 +165,15 @@ def update_ammos(stats):
             settings.bullet_left = settings.bullet_limit
             bullet_left_text.update_text(settings.bullet_left)
 
-def append_alien(stats):
+def append_invader(stats):
     # Создание объектов в списке
-    if random.randrange(0,100) < settings.alien_chance and len(settings.aliens) < settings.alien_allowed:
-        alien = Alien(screen, settings)
-        settings.aliens.append(alien)
-        if not stats.weapon_active and settings.alien_sf_min < settings.alien_sf_max - 1:
-            settings.alien_sf_min += 0.1
-        if stats.weapon_active and settings.alien_sf_min > 1.1:
-            settings.alien_sf_min -= 0.1
-            print(settings.alien_sf_min)
+    if random.randrange(0,100) < settings.invader_chance and len(settings.invaders) < settings.invader_allowed:
+        invader = Invader(screen, settings)
+        settings.invaders.append(invader)
+        if not stats.weapon_active and settings.invader_sf_min < settings.invader_sf_max - 1:
+            settings.invader_sf_min += 0.1
+        if stats.weapon_active and settings.invader_sf_min > 1.1:
+            settings.invader_sf_min -= 0.1
 
 def append_ammo():
     # Создание объектов в списке
@@ -212,8 +213,8 @@ def blit_screen(stats):
     bullet_left_text.blitme()
     for bullet in settings.bullets:
         bullet.blitme()
-    for alien in settings.aliens:
-        alien.blitme()
+    for invader in settings.invaders:
+        invader.blitme()
     if not stats.game_active:
         start.blitme()
         score.blitme()
