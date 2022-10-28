@@ -18,7 +18,7 @@ settings = Settings()
 screen = Screen(settings)
 ship = Ship(screen, settings)
 star = Star(screen, settings)
-start = Text(screen, "PAUSE", screen.rect.centerx, screen.rect.centery - 40)
+pause = Text(screen, "PAUSE", screen.rect.centerx, screen.rect.centery - 40)
 score = Text(screen, "BOSS ARRIVES: {:,}", screen.rect.centerx, screen.rect.centery)
 record = Text(screen, "RECORD: {:,}", screen.rect.centerx, screen.rect.centery - 20)
 bullet_left_text = Text(screen, "{:,}", ship.rect.centerx, ship.rect.centery, settings.bullet_left)
@@ -131,7 +131,6 @@ def reset_after_collision(stats):
         settings.drop_stars.append(drop_star)
     else:
         stats.game_active = False
-        # score.update_text(settings.boss_score - settings.score)
         if settings.score > settings.record:
             settings.record = settings.score
         record.update_text(settings.record)
@@ -262,7 +261,7 @@ def blit_screen(stats):
     for ball in settings.balls:
         ball.blitme()
     if not stats.game_active:
-        start.blitme()
+        pause.blitme()
         score.blitme()
         record.blitme()
     pygame.display.update()
