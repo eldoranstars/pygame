@@ -3,4 +3,4 @@ class GameStats():
         # Атрибуты класса
         self.game_active = False
         self.asteroid_active = False
-        self.bullet_active = False
+        self.weapon_active = False

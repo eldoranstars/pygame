@@ -13,11 +13,15 @@ while True:
     if stats.game_active:
         gf.update_aliens(stats)
         gf.update_player()
-        gf.reload_bullets()
         gf.update_bullets()
         gf.update_removed_stars()
         gf.update_asteroids()
         gf.append_star()
         gf.append_alien()
-    if stats.game_active and stats.asteroid_active:
-        gf.append_asteroid()
+        if stats.asteroid_active:
+            gf.append_asteroid()
+        if stats.weapon_active:
+            gf.reload_bullets()
+        if not stats.weapon_active:
+            gf.update_ammos(stats)
+            gf.append_ammo()

@@ -22,6 +22,7 @@ class Settings():
         self.star_color = pygame.image.load('images/star.png')
         self.ship_surface = pygame.image.load('images/destroyer.png')
         self.alien_surface = pygame.image.load('images/invader.png')
+        self.ammo_surface = pygame.image.load('images/laser-gun.png')
         self.asteroid_pink = pygame.image.load('images/asteroid-pink.png')
         self.asteroid_grey = pygame.image.load('images/asteroid-grey.png')
         self.asteroid_blue = pygame.image.load('images/asteroid-blue.png')
@@ -33,6 +34,11 @@ class Settings():
         self.alien_sf_max = 5
         self.alien_chance = 1
         self.alien_allowed = 15
+        # Параметры аммуниции
+        self.ammo_sf_min = 1
+        self.ammo_sf_max = 2
+        self.ammo_chance = 1
+        self.ammo_allowed = 15
         # Параметры среды
         self.asteroid_chance = 10
         self.asteroid_allowed = 15
@@ -42,6 +48,7 @@ class Settings():
     def reset_settings(self):
         # Сбросить параметры игры
         self.aliens = []
+        self.ammos = []
         self.asteroids = []
         self.bullets = []
         self.stars = []
@@ -52,4 +59,4 @@ class Settings():
         self.reload_bullet = False
         self.asteroid_sf = self.ship_sf + 1
         self.star_left = self.star_limit
-        self.bullet_left = self.bullet_limit
+        self.bullet_left = self.bullet_limit - self.bullet_limit

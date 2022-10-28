@@ -5,7 +5,13 @@ class Alien():
         # Атрибуты класса
         self.screen = screen.surface
         self.speed_factor = random.randrange(settings.alien_sf_min, settings.alien_sf_max)
+        self.move_left = False
+        self.move_right = False
         self.move_direction = random.randrange(0,9)
+        if self.move_direction < 3:
+            self.move_left = True
+        if self.move_direction > 5:
+            self.move_right = True        
         # Загрузка изображения и получение прямоугольника
         self.surface = settings.alien_surface
         self.rect = self.surface.get_rect()
@@ -15,9 +21,9 @@ class Alien():
 
     def update(self):
         # Обновление координат изображения
-        if self.move_direction < 3:
+        if self.move_left:
             self.rect.centerx += self.speed_factor
-        if self.move_direction > 5:
+        if self.move_right:
             self.rect.centerx -= self.speed_factor
         self.rect.centery += self.speed_factor
 

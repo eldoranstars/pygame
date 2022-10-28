@@ -1,3 +1,4 @@
+from re import S
 import sys
 import pygame
 import random
@@ -10,6 +11,7 @@ from ship import Ship
 from star import Star
 from text import Text
 from asteroid import Asteroid
+from ammo import Ammo
 
 settings = Settings()
 screen = Screen(settings)
@@ -18,7 +20,7 @@ star = Star(screen, settings)
 start = Text(screen, "START", screen.rect.centerx, screen.rect.centery - 40)
 score = Text(screen, "SCORE: {:,}", screen.rect.centerx, screen.rect.centery)
 record = Text(screen, "RECORD: {:,}", screen.rect.centerx, screen.rect.centery - 20)
-bullets_clip = Text(screen, "{:,}", ship.rect.centerx, ship.rect.centery, settings.bullet_left)
+bullet_left_text = Text(screen, "{:,}", ship.rect.centerx, ship.rect.centery, settings.bullet_left)
 
 def check_events(stats):
     # Отслеживание событий клавиатуры и мыши.
@@ -48,7 +50,7 @@ def update_player():
         ship.rect.centery += settings.ship_sf
     if key[pygame.K_SPACE] == 1 and settings.bullet_left > 0:
         settings.bullet_left -= 1
-        bullets_clip.update_text(settings.bullet_left)
+        bullet_left_text.update_text(settings.bullet_left)
         bullet = Bullet(screen, settings, ship)
         settings.bullets.append(bullet)
 
@@ -60,7 +62,7 @@ def reload_bullets():
     if settings.reload_bullet and pygame.time.get_ticks() - settings.last_bullet_time > settings.reload_bullet_time:
         settings.reload_bullet = False
         settings.bullet_left = settings.bullet_limit
-        bullets_clip.update_text(settings.bullet_left)
+        bullet_left_text.update_text(settings.bullet_left)
 
 def collision(rect, wm, hm):
     # Получаем дополнительный прямоугольник для обработки коллизий.
@@ -126,14 +128,18 @@ def update_aliens(stats):
             settings.aliens.remove(alien)
         if collision(ship.rect, 0.6, 0.9).colliderect(collision(alien.rect, 0.8, 0.6)):
             sleep(1)
+            stats.weapon_active = False
+            settings.aliens.clear()
+            settings.bullets.clear()
+            settings.asteroids.clear()
+            settings.ammos.clear()
+            settings.bullet_left = 0
+            bullet_left_text.update_text(settings.bullet_left)
             if settings.star_left > 0:
                 settings.star_left -= 1
                 removed_star = random.choice(settings.stars)
                 settings.stars.remove(removed_star)
                 settings.removed_stars.append(removed_star)
-                settings.aliens.clear()
-                settings.bullets.clear()
-                settings.asteroids.clear()
             else:
                 stats.game_active = False
                 if settings.score > settings.record:
@@ -143,15 +149,31 @@ def update_aliens(stats):
                 record.update_text(settings.record)
                 ship.rect.centerx = screen.rect.centerx
                 ship.rect.bottom = screen.rect.bottom
-                settings.aliens.clear()
-                settings.bullets.clear()
-                settings.asteroids.clear()
+
+def update_ammos(stats):
+    # Обновить расположение объектов на экране.
+    for ammo in settings.ammos:
+        ammo.update()
+        if not screen.rect.colliderect(ammo.rect):
+            settings.ammos.remove(ammo)
+        if collision(ship.rect, 0.6, 0.9).colliderect(collision(ammo.rect, 0.6, 0.6)):
+            stats.weapon_active = True
+            settings.bullet_limit = 1
+            settings.bullet_left = settings.bullet_limit
+            bullet_left_text.update_text(settings.bullet_left)
+            settings.ammos.clear()
 
 def append_alien():
     # Создание объектов в списке
     if random.randrange(0,100) < settings.alien_chance and len(settings.aliens) < settings.alien_allowed:
         alien = Alien(screen, settings)
         settings.aliens.append(alien)
+
+def append_ammo():
+    # Создание объектов в списке
+    if random.randrange(0,1000) < settings.ammo_chance and len(settings.ammos) < settings.ammo_allowed:
+        ammo = Ammo(screen, settings)
+        settings.ammos.append(ammo)
 
 def append_asteroid():
     # Создание объектов в списке
@@ -178,9 +200,11 @@ def blit_screen(stats):
     for star in settings.removed_stars:
         star.blitme()
     for asteroid in settings.asteroids:
-        asteroid.blitme()   
+        asteroid.blitme()
+    for ammo in settings.ammos:
+        ammo.blitme()
     ship.blitme()
-    bullets_clip.blitme()
+    bullet_left_text.blitme()
     for bullet in settings.bullets:
         bullet.blitme()
     for alien in settings.aliens:
