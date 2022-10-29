@@ -10,9 +10,9 @@ class Asteroid():
         self.move_right = False
         self.move_down = True
         self.move_direction = random.randrange(0,9)
-        if self.move_direction < 3:
+        if self.move_direction < 4:
             self.move_left = True
-        if self.move_direction > 5:
+        if self.move_direction > 4:
             self.move_right = True
         # Загрузка изображения и получение прямоугольника
         self.surface = random.choice(settings.asteroid_list)

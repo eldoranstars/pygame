@@ -20,7 +20,7 @@ ship = Ship(screen, settings)
 star = Star(screen, settings)
 pause = Text(screen, "PAUSE", screen.rect.centerx, screen.rect.centery - 40)
 score = Text(screen, "BOSS ARRIVES: {:,}", screen.rect.centerx, screen.rect.centery)
-record = Text(screen, "RECORD: {:,}", screen.rect.centerx, screen.rect.centery - 20)
+record = Text(screen, "PREVIOS RECORD: {:,}", screen.rect.centerx, screen.rect.centery - 20)
 bullet_left_text = Text(screen, "{:,}", ship.rect.centerx, ship.rect.centery, settings.bullet_left)
 
 def check_events(stats):
@@ -89,6 +89,30 @@ def update_bullets():
         bullet.update()
         if not screen.rect.colliderect(bullet.rect):
             settings.bullets.remove(bullet)
+        for invader in settings.invaders:
+            if invader.rect.contains(bullet.rect):
+                settings.invaders.remove(invader)
+                settings.score += 3
+                score.update_text(settings.boss_score - settings.score)
+                try:
+                    settings.bullets.remove(bullet)
+                # если пуля попала сразу в оба объекта
+                except: ValueError
+        for ball in settings.balls:
+            if ball.rect.contains(bullet.rect):
+                ball.life_left -= 1
+                if ball.life_left == 0:
+                    ammo = Ammo(screen, settings, 'shield')
+                    ammo.rect.center = ball.rect.center
+                    settings.ammos.append(ammo)
+                    settings.balls.remove(ball)
+                    settings.score += 15
+                    score.update_text(settings.boss_score - settings.score)
+                    settings.ball_chance = settings.ball_chance * settings.ball_chance_reduction
+                try:
+                    settings.bullets.remove(bullet)
+                # если пуля попала сразу в оба объекта
+                except: ValueError
 
 def update_asteroids():
     # Обновить расположение объектов на экране.
@@ -96,32 +120,34 @@ def update_asteroids():
         asteroid.update()
         if not screen.rect.colliderect(asteroid.rect):
             settings.asteroids.remove(asteroid)
-        if collision(asteroid.rect, 0.8, 0.8).collidepoint(ship.rect.midtop):
-            asteroid.move_down = False
-        if collision(asteroid.rect, 0.8, 0.8).collidepoint(ship.rect.midleft):
-            asteroid.move_left = True
-            asteroid.move_right = False
-            asteroid.move_down = False
-        if collision(asteroid.rect, 0.8, 0.8).collidepoint(ship.rect.midright):
-            asteroid.move_left = False
-            asteroid.move_right = True
-            asteroid.move_down = False
-        for invader in settings.invaders:
-            if collision(asteroid.rect, 0.8, 0.8).colliderect(collision(invader.rect, 0.8, 0.6)):
-                settings.invaders.remove(invader)
-                settings.score += 3
-                score.update_text(settings.boss_score - settings.score)
-        for ball in settings.balls:
-            if collision(asteroid.rect, 0.8, 0.8).colliderect(collision(ball.rect, 0.7, 0.7)):
-                settings.balls.remove(ball)
-                settings.score += 15
-                score.update_text(settings.boss_score - settings.score)
+        # if collision(asteroid.rect, 0.8, 0.8).collidepoint(ship.rect.midtop):
+        #     asteroid.move_down = False
+        # if collision(asteroid.rect, 0.8, 0.8).collidepoint(ship.rect.midleft):
+        #     asteroid.move_left = True
+        #     asteroid.move_right = False
+        #     asteroid.move_down = False
+        # if collision(asteroid.rect, 0.8, 0.8).collidepoint(ship.rect.midright):
+        #     asteroid.move_left = False
+        #     asteroid.move_right = True
+        #     asteroid.move_down = False
+        # for invader in settings.invaders:
+        #     if collision(asteroid.rect, 0.8, 0.8).colliderect(collision(invader.rect, 0.8, 0.6)):
+        #         settings.invaders.remove(invader)
+        #         settings.score += 3
+        #         score.update_text(settings.boss_score - settings.score)
+        # for ball in settings.balls:
+        #     if collision(asteroid.rect, 0.8, 0.8).colliderect(collision(ball.rect, 0.8, 0.8)):
+        #         settings.balls.remove(ball)
+        #         settings.score += 15
+        #         score.update_text(settings.boss_score - settings.score)
 
 def reset_after_collision(stats):
     # Обновить счет и экран после коллизии
-    sleep(1)
-    stats.weapon_active = False
-    stats.asteroid_active = False
+    sleep(0.5)
+    if not stats.shield_active:
+        stats.weapon_active = False
+    stats.shield_active = False
+    ship.surface = settings.ship_surface
     if len(settings.stars) > 0:
         settings.star_left -= 1
         settings.player_hit()
@@ -146,15 +172,6 @@ def update_invaders(stats):
             settings.invaders.remove(invader)
             settings.score += 1
             score.update_text(settings.boss_score - settings.score)
-        for bullet in settings.bullets:
-            if invader.rect.contains(bullet.rect):
-                settings.invaders.remove(invader)
-                settings.score += 3
-                score.update_text(settings.boss_score - settings.score)
-                try:
-                    settings.bullets.remove(bullet)
-                # если пуля попала сразу в оба объекта
-                except: ValueError
         if collision(ship.rect, 0.6, 0.9).colliderect(collision(invader.rect, 0.8, 0.6)):
             reset_after_collision(stats)
 
@@ -170,24 +187,36 @@ def update_balls(stats):
             ball.move_left = True
         if not screen.rect.collidepoint(ball.rect.midbottom):
             ball.move_down = False
-        if not screen.rect.collidepoint(ball.rect.midtop):
+        if not screen.rect.collidepoint(ball.rect.midtop) and ball.surface == settings.ball_surface:
             ball.move_down = True
-        for bullet in settings.bullets:
-            if ball.rect.contains(bullet.rect):
-                ball.life_left -= 1
-                if ball.life_left == 0:
-                    settings.balls.remove(ball)
-                    settings.score += 15
+        if not screen.rect.colliderect(ball.rect):
+            settings.balls.remove(ball)
+            settings.score += 15
+            settings.ball_chance = settings.ball_chance / settings.ball_chance_reduction
+        if not stats.shield_active:
+            if collision(ship.rect, 0.6, 0.9).colliderect(collision(ball.rect, 0.8, 0.8)):
+                reset_after_collision(stats)
+                score.update_text(settings.boss_score - settings.score)
+        if stats.shield_active:
+            if collision(ball.rect, 0.8, 0.8).collidepoint(ship.rect.midtop):
+                ball.move_down = False
+                ball.surface = settings.alien_ball_surface
+            if collision(ball.rect, 0.8, 0.8).collidepoint(ship.rect.midright):
+                ball.move_left = True
+                ball.move_right = False
+                ball.move_down = False
+                ball.surface = settings.alien_ball_surface
+            if collision(ball.rect, 0.8, 0.8).collidepoint(ship.rect.midleft):
+                ball.move_left = False
+                ball.move_right = True
+                ball.move_down = False
+                ball.surface = settings.alien_ball_surface
+        if ball.surface == settings.alien_ball_surface:
+            for invader in settings.invaders:
+                if collision(ball.rect, 0.8, 0.8).colliderect(collision(invader.rect, 0.8, 0.6)):
+                    settings.invaders.remove(invader)
+                    settings.score += 3
                     score.update_text(settings.boss_score - settings.score)
-                    settings.ball_chance = 8
-                    settings.ball_chance_reduction = 1
-                    stats.asteroid_active = True
-                try:
-                    settings.bullets.remove(bullet)
-                # если пуля попала сразу в оба объекта
-                except: ValueError
-        if collision(ship.rect, 0.6, 0.9).colliderect(collision(ball.rect, 0.7, 0.7)):
-            reset_after_collision(stats)
 
 def update_ammos(stats):
     # Обновить расположение объектов на экране.
@@ -197,12 +226,16 @@ def update_ammos(stats):
             settings.ammos.remove(ammo)
         if collision(ship.rect, 0.6, 0.9).colliderect(collision(ammo.rect, 0.6, 0.6)):
             settings.ammos.remove(ammo)
-            stats.weapon_active = True
-            settings.invader_sf_min = 1
-            settings.invader_sf_max = 8
-            settings.bullet_limit = 1
-            settings.bullet_left = settings.bullet_limit
-            bullet_left_text.update_text(settings.bullet_left)
+            if ammo.type == 'weapon':
+                stats.weapon_active = True
+                settings.invader_sf_min = 1
+                settings.invader_sf_max = 8
+                settings.bullet_limit = 1
+                settings.bullet_left = settings.bullet_limit
+                bullet_left_text.update_text(settings.bullet_left)
+            if ammo.type == 'shield':
+                stats.shield_active = True
+                ship.surface = settings.shield_ship_surface
 
 def append_invader(stats):
     # Создание объектов в списке
@@ -222,7 +255,7 @@ def append_ball():
 def append_ammo():
     # Создание объектов в списке
     if random.randrange(0,1000) < settings.ammo_chance and len(settings.ammos) < settings.ammo_allowed:
-        ammo = Ammo(screen, settings)
+        ammo = Ammo(screen, settings, 'weapon')
         settings.ammos.append(ammo)
 
 def append_asteroid():

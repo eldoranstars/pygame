@@ -21,10 +21,13 @@ class Settings():
         # Параметры изображений
         self.screen_bg = pygame.image.load('images/space.png')
         self.star_color = pygame.image.load('images/star.png')
-        self.ship_surface = pygame.image.load('images/destroyer.png')
+        self.ship_surface = pygame.image.load('images/ship.png')
+        self.shield_ship_surface = pygame.image.load('images/shield-ship.png')
         self.invader_surface = pygame.image.load('images/invader.png')
         self.ball_surface = pygame.image.load('images/ball.png')
+        self.alien_ball_surface = pygame.image.load('images/turbo-ball.png')
         self.ammo_surface = pygame.image.load('images/laser-gun.png')
+        self.shield_surface = pygame.image.load('images/space-gun.png')
         self.asteroid_pink = pygame.image.load('images/asteroid-pink.png')
         self.asteroid_grey = pygame.image.load('images/asteroid-grey.png')
         self.asteroid_blue = pygame.image.load('images/asteroid-blue.png')
@@ -34,8 +37,9 @@ class Settings():
         # Параметры чужих
         self.invader_chance = 10
         self.invader_allowed = 15
-        self.ball_sf_min = 1
+        self.ball_sf_min = 2
         self.ball_sf_max = 5
+        self.ball_chance_reduction = 2
         # Параметры аммуниции
         self.ammo_sf_min = 1
         self.ammo_sf_max = 2
@@ -49,15 +53,14 @@ class Settings():
 
     def player_hit(self):
         # Сбросить параметры при столкновении
+        self.invaders = []
         self.balls = []
         self.bullets = []
-        self.invaders = []
         self.asteroids = []
         self.ammos = []
         self.invader_sf_min = 1
         self.invader_sf_max = 9
         self.ball_chance = 8
-        self.ball_chance_reduction = 2
         self.bullet_left = self.bullet_limit - self.bullet_limit
 
     def new_game(self):
@@ -66,7 +69,7 @@ class Settings():
         self.drop_stars = []
         self.star_left = self.star_limit
         self.score = 0
-        self.boss_score = 999
+        self.boss_score = 3333
         self.reload_bullet = False
         self.last_bullet_time = 0
         self.player_hit()

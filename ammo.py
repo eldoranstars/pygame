@@ -1,12 +1,16 @@
 import random
 
 class Ammo():
-    def __init__(self, screen, settings):
+    def __init__(self, screen, settings, type):
         # Атрибуты класса
         self.screen = screen.surface
+        self.type = type
         self.speed_factor = random.randrange(settings.ammo_sf_min, settings.ammo_sf_max)   
         # Загрузка изображения и получение прямоугольника
-        self.surface = settings.ammo_surface
+        if type == 'weapon':
+            self.surface = settings.ammo_surface
+        if type == 'shield':
+            self.surface = settings.shield_surface
         self.rect = self.surface.get_rect()
         # Получение изначальных координат изображения
         self.rect.centerx = random.randrange(self.rect.width, settings.screen_width, self.rect.width)
