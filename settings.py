@@ -16,17 +16,18 @@ class Settings():
         self.bullet_height = 9
         self.bullet_limit = 1
         self.bullet_sf = 15
-        self.reload_bullet_time = 1000
         self.bullet_color = (60, 60, 60)
         # Параметры изображений
         self.screen_bg = pygame.image.load('images/space.png')
-        self.star_color = pygame.image.load('images/star.png')
+        self.star_surface = pygame.image.load('images/star.png')
         self.ship_surface = pygame.image.load('images/ship.png')
         self.shield_ship_surface = pygame.image.load('images/shield-ship.png')
         self.invader_surface = pygame.image.load('images/invader.png')
         self.ball_surface = pygame.image.load('images/ball.png')
+        self.eye_surface = pygame.image.load('images/eye.png')
         self.alien_ball_surface = pygame.image.load('images/turbo-ball.png')
         self.ammo_surface = pygame.image.load('images/laser-gun.png')
+        self.alien_surface = pygame.image.load('images/alien.png')
         self.shield_surface = pygame.image.load('images/space-gun.png')
         self.asteroid_pink = pygame.image.load('images/asteroid-pink.png')
         self.asteroid_grey = pygame.image.load('images/asteroid-grey.png')
@@ -40,6 +41,9 @@ class Settings():
         self.ball_sf_min = 2
         self.ball_sf_max = 5
         self.ball_chance_reduction = 2
+        self.eye_sf_min = 2
+        self.eye_sf_max = 5
+        self.eye_chance_reduction = 2
         # Параметры аммуниции
         self.ammo_sf_min = 1
         self.ammo_sf_max = 2
@@ -54,6 +58,7 @@ class Settings():
     def player_hit(self):
         # Сбросить параметры при столкновении
         self.invaders = []
+        self.eyes = []
         self.balls = []
         self.bullets = []
         self.asteroids = []
@@ -61,6 +66,7 @@ class Settings():
         self.invader_sf_min = 1
         self.invader_sf_max = 9
         self.ball_chance = 8
+        self.eye_chance = 8
         self.bullet_left = self.bullet_limit - self.bullet_limit
 
     def new_game(self):
@@ -69,7 +75,8 @@ class Settings():
         self.drop_stars = []
         self.star_left = self.star_limit
         self.score = 0
-        self.boss_score = 3333
+        self.boss_score = 5555
         self.reload_bullet = False
+        self.reload_bullet_time = 1000
         self.last_bullet_time = 0
         self.player_hit()

@@ -14,12 +14,15 @@ while True:
         gf.update_invaders(stats)
         gf.update_balls(stats)
         gf.update_ammos(stats)
+        gf.update_eyes()
         gf.update_player()
         gf.update_bullets()
         gf.update_drop_stars()
         gf.update_asteroids()
         gf.append_star()
         gf.append_invader(stats)
+        if stats.shield_active:
+            gf.append_eye()
         if stats.weapon_active:
             gf.reload_bullets()
             gf.append_ball()

@@ -11,6 +11,8 @@ class Ammo():
             self.surface = settings.ammo_surface
         if type == 'shield':
             self.surface = settings.shield_surface
+        if type == 'alien':
+            self.surface = settings.alien_surface
         self.rect = self.surface.get_rect()
         # Получение изначальных координат изображения
         self.rect.centerx = random.randrange(self.rect.width, settings.screen_width, self.rect.width)
