@@ -21,6 +21,8 @@ while True:
         gf.append_invader(stats)
         if stats.asteroid_active:
             gf.append_asteroid()
+            gf.update_ammos(stats)
+            gf.append_ammo()
         if stats.weapon_active:
             gf.reload_bullets()
             gf.append_ball()

@@ -176,12 +176,12 @@ def update_balls(stats):
             if ball.rect.contains(bullet.rect):
                 ball.life_left -= 1
                 if ball.life_left == 0:
-                    stats.asteroid_active = True
                     settings.balls.remove(ball)
+                    settings.score += 15
+                    score.update_text(settings.boss_score - settings.score)
                     settings.ball_chance = 8
                     settings.ball_chance_reduction = 1
-                    settings.score += 15
-                score.update_text(settings.boss_score - settings.score)
+                    stats.asteroid_active = True
                 try:
                     settings.bullets.remove(bullet)
                 # если пуля попала сразу в оба объекта

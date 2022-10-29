@@ -61,7 +61,7 @@ class Settings():
         self.bullet_left = self.bullet_limit - self.bullet_limit
 
     def new_game(self):
-        # Сьросить параметры для новой игры
+        # Сбросить параметры для новой игры
         self.stars = []
         self.drop_stars = []
         self.star_left = self.star_limit
