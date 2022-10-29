@@ -4,6 +4,7 @@ import random
 from time import sleep
 from invader import Invader
 from eye import Eye
+from small import Small
 from ball import Ball
 from bullet import Bullet
 from settings import Settings
@@ -98,6 +99,15 @@ def update_bullets():
                     settings.bullets.remove(bullet)
                 # если пуля попала сразу в оба объекта
                 except: ValueError
+        for small in settings.smalls:
+            if small.rect.contains(bullet.rect):
+                settings.smalls.remove(small)
+                settings.score += 3
+                score.update_text(settings.boss_score - settings.score)
+                try:
+                    settings.bullets.remove(bullet)
+                # если пуля попала сразу в оба объекта
+                except: ValueError
         for ball in settings.balls:
             if ball.rect.contains(bullet.rect):
                 ball.life_left -= 1
@@ -182,6 +192,17 @@ def update_invaders(stats):
         if collision(ship.rect, 0.6, 0.9).colliderect(collision(invader.rect, 0.8, 0.6)):
             reset_after_collision(stats)
 
+def update_smalls(stats):
+    # Обновить расположение объектов на экране.
+    for small in settings.smalls:
+        small.update()
+        if not screen.rect.colliderect(small.rect):
+            settings.smalls.remove(small)
+            settings.score += 1
+            score.update_text(settings.boss_score - settings.score)
+        if collision(ship.rect, 0.6, 0.9).colliderect(collision(small.rect, 0.8, 0.6)):
+            reset_after_collision(stats)
+
 def update_balls(stats):
     # Обновить расположение объектов на экране.
     for ball in settings.balls:
@@ -224,6 +245,11 @@ def update_balls(stats):
                     settings.invaders.remove(invader)
                     settings.score += 3
                     score.update_text(settings.boss_score - settings.score)
+            for small in settings.smalls:
+                if collision(ball.rect, 0.7, 0.7).colliderect(collision(small.rect, 0.8, 0.6)):
+                    settings.smalls.remove(small)
+                    settings.score += 3
+                    score.update_text(settings.boss_score - settings.score)
             for eye in settings.eyes:
                 if collision(ball.rect, 0.7, 0.7).colliderect(collision(eye.rect, 0.7, 0.7)):
                     ammo = Ammo(screen, settings, 'alien')
@@ -242,6 +268,10 @@ def update_eyes():
             eye.move_left = True
         if not screen.rect.collidepoint(eye.rect.midleft):
             eye.move_left = False
+        if eye.small_left > 0:
+            eye.small_left -= 1
+            small = Small(screen, settings, eye.rect.center)
+            settings.smalls.append(small)
 
 def update_ammos(stats):
     # Обновить расположение объектов на экране.
@@ -263,7 +293,7 @@ def update_ammos(stats):
                 settings.ball_chance = 16
                 ship.surface = settings.shield_ship_surface
             if ammo.type == 'alien':
-                settings.reload_bullet_time -= 80
+                settings.reload_bullet_time -= 100
                 settings.score += 450
                 score.update_text(settings.boss_score - settings.score)
 
@@ -328,6 +358,8 @@ def blit_screen(stats):
         bullet.blitme()
     for invader in settings.invaders:
         invader.blitme()
+    for small in settings.smalls:
+        small.blitme()
     for eye in settings.eyes:
         eye.blitme()
     for ball in settings.balls:

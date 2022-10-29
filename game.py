@@ -12,6 +12,7 @@ while True:
     gf.blit_screen(stats)
     if stats.game_active:
         gf.update_invaders(stats)
+        gf.update_smalls(stats)
         gf.update_balls(stats)
         gf.update_ammos(stats)
         gf.update_eyes()

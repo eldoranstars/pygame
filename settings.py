@@ -23,6 +23,7 @@ class Settings():
         self.ship_surface = pygame.image.load('images/ship.png')
         self.shield_ship_surface = pygame.image.load('images/shield-ship.png')
         self.invader_surface = pygame.image.load('images/invader.png')
+        self.small_surface = pygame.image.load('images/small.png')
         self.ball_surface = pygame.image.load('images/ball.png')
         self.eye_surface = pygame.image.load('images/eye.png')
         self.alien_ball_surface = pygame.image.load('images/turbo-ball.png')
@@ -57,6 +58,7 @@ class Settings():
 
     def player_hit(self):
         # Сбросить параметры при столкновении
+        self.smalls = []
         self.invaders = []
         self.eyes = []
         self.balls = []

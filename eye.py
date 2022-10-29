@@ -1,8 +1,13 @@
 import random
+import pygame
 
 class Eye():
     def __init__(self, screen, settings):
         # Атрибуты класса
+        self.reload_small = False
+        self.last_small_time = 0
+        self.reload_small_time = 1000
+        self.small_left = 0
         self.screen = screen.surface
         self.speed_factor = random.randrange(int(settings.eye_sf_min), int(settings.eye_sf_max))
         # Загрузка изображения и получение прямоугольника
@@ -22,6 +27,14 @@ class Eye():
             self.rect.centerx -= self.speed_factor
         if not self.move_left:
             self.rect.centerx += self.speed_factor
+        # Флаг перезарядки и фиксация времени начала
+        if not self.reload_small and self.small_left == 0:
+            self.reload_small = True
+            self.last_small_time = pygame.time.get_ticks()
+        # Снятие флага перезарядки на основе дельты времени и пополнение боезапаса
+        if self.reload_small and pygame.time.get_ticks() - self.last_small_time > self.reload_small_time:
+            self.reload_small = False
+            self.small_left = 1
 
     def blitme(self):
         # Вывод изображения на экран
