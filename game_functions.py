@@ -32,6 +32,7 @@ def check_events(stats):
                 sys.exit()
             if event.type == pygame.KEYDOWN and event.key == pygame.K_q:
                 stats.game_active = False
+                score.update_text(settings.boss_score - settings.score)
     if not stats.game_active:
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
@@ -94,7 +95,6 @@ def update_bullets():
             if invader.rect.contains(bullet.rect):
                 settings.invaders.remove(invader)
                 settings.score += 3
-                score.update_text(settings.boss_score - settings.score)
                 try:
                     settings.bullets.remove(bullet)
                 # если пуля попала сразу в оба объекта
@@ -103,7 +103,6 @@ def update_bullets():
             if small.rect.contains(bullet.rect):
                 settings.smalls.remove(small)
                 settings.score += 3
-                score.update_text(settings.boss_score - settings.score)
                 try:
                     settings.bullets.remove(bullet)
                 # если пуля попала сразу в оба объекта
@@ -117,7 +116,6 @@ def update_bullets():
                     settings.ammos.append(ammo)
                     settings.balls.remove(ball)
                     settings.score += 15
-                    score.update_text(settings.boss_score - settings.score)
                     settings.ball_chance = settings.ball_chance * settings.ball_chance_reduction
                 try:
                     settings.bullets.remove(bullet)
@@ -150,12 +148,10 @@ def update_asteroids():
         #     if collision(asteroid.rect, 0.8, 0.8).colliderect(collision(invader.rect, 0.8, 0.6)):
         #         settings.invaders.remove(invader)
         #         settings.score += 3
-        #         score.update_text(settings.boss_score - settings.score)
         # for ball in settings.balls:
         #     if collision(asteroid.rect, 0.8, 0.8).colliderect(collision(ball.rect, 0.7, 0.7)):
         #         settings.balls.remove(ball)
         #         settings.score += 15
-        #         score.update_text(settings.boss_score - settings.score)
         #         settings.ball_chance = settings.ball_chance * settings.ball_chance_reduction
 
 def reset_after_collision(stats):
@@ -176,6 +172,7 @@ def reset_after_collision(stats):
         stats.game_active = False
         if settings.score > settings.record:
             settings.record = settings.score
+        score.update_text(settings.boss_score - settings.score)
         record.update_text(settings.record)
         ship.rect.centerx = screen.rect.centerx
         ship.rect.bottom = screen.rect.bottom
@@ -188,7 +185,6 @@ def update_invaders(stats):
         if not screen.rect.colliderect(invader.rect):
             settings.invaders.remove(invader)
             settings.score += 1
-            score.update_text(settings.boss_score - settings.score)
         if collision(ship.rect, 0.6, 0.9).colliderect(collision(invader.rect, 0.8, 0.6)):
             reset_after_collision(stats)
 
@@ -199,7 +195,6 @@ def update_smalls(stats):
         if not screen.rect.colliderect(small.rect):
             settings.smalls.remove(small)
             settings.score += 1
-            score.update_text(settings.boss_score - settings.score)
         if collision(ship.rect, 0.6, 0.9).colliderect(collision(small.rect, 0.8, 0.6)):
             reset_after_collision(stats)
 
@@ -224,7 +219,6 @@ def update_balls(stats):
         if not stats.shield_active:
             if collision(ship.rect, 0.6, 0.9).colliderect(collision(ball.rect, 0.7, 0.7)):
                 reset_after_collision(stats)
-                score.update_text(settings.boss_score - settings.score)
         if stats.shield_active:
             if collision(ball.rect, 0.7, 0.7).collidepoint(ship.rect.midtop):
                 ball.move_down = False
@@ -244,12 +238,10 @@ def update_balls(stats):
                 if collision(ball.rect, 0.7, 0.7).colliderect(collision(invader.rect, 0.8, 0.6)):
                     settings.invaders.remove(invader)
                     settings.score += 3
-                    score.update_text(settings.boss_score - settings.score)
             for small in settings.smalls:
                 if collision(ball.rect, 0.7, 0.7).colliderect(collision(small.rect, 0.8, 0.6)):
                     settings.smalls.remove(small)
                     settings.score += 3
-                    score.update_text(settings.boss_score - settings.score)
             for eye in settings.eyes:
                 if collision(ball.rect, 0.7, 0.7).colliderect(collision(eye.rect, 0.7, 0.7)):
                     ammo = Ammo(screen, settings, 'alien')
@@ -257,7 +249,6 @@ def update_balls(stats):
                     settings.ammos.append(ammo)
                     settings.eyes.remove(eye)
                     settings.score += 150
-                    score.update_text(settings.boss_score - settings.score)
                     settings.eye_chance = settings.eye_chance * settings.eye_chance_reduction
 
 def update_eyes():
@@ -295,7 +286,6 @@ def update_ammos(stats):
             if ammo.type == 'alien':
                 settings.reload_bullet_time -= 100
                 settings.score += 450
-                score.update_text(settings.boss_score - settings.score)
 
 def append_invader(stats):
     # Создание объектов в списке
