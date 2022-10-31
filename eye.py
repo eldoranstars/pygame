@@ -33,6 +33,7 @@ class Eye():
             self.move_left = True
         if not self.screen.rect.collidepoint(self.rect.midleft):
             self.move_left = False
+        # Создание флота
         if self.small_left > 0:
             self.small_left -= 1
             self.small = Small(self.screen, self.settings, self.rect.center)

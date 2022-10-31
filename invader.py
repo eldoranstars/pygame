@@ -16,9 +16,9 @@ class Invader():
 
     def update(self):
         # Обновление координат изображения
-        if self.move_direction < 2:
+        if self.move_direction < 3:
             self.rect.centerx += self.speed_factor
-        if self.move_direction > 6:
+        if self.move_direction > 5:
             self.rect.centerx -= self.speed_factor
         self.rect.centery += self.speed_factor
         if not self.screen.rect.colliderect(self.rect):

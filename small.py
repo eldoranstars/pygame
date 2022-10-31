@@ -5,7 +5,7 @@ class Small():
         # Атрибуты класса
         self.screen = screen
         self.settings = settings
-        self.speed_factor = random.randrange(int(settings.invader_sf_min), int(settings.invader_sf_max))     
+        self.speed_factor = random.randrange(int(settings.small_sf_min), int(settings.small_sf_max))     
         # Загрузка изображения и получение прямоугольника
         self.surface = settings.small_surface
         self.rect = self.surface.get_rect()

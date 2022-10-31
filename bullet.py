@@ -20,6 +20,13 @@ class Bullet():
         self.rect.y -= self.speed_factor
         if not self.screen.rect.colliderect(self.rect):
             self.settings.bullets.remove(self)
+        for boss in self.settings.bosses:
+            if boss.rect.contains(self.rect):
+                boss.life_left -= 1
+                try:
+                    self.settings.bullets.remove(self)
+                # если пуля попала сразу в оба объекта
+                except: ValueError
         for invader in self.settings.invaders:
             if invader.rect.contains(self.rect):
                 self.settings.invaders.remove(invader)

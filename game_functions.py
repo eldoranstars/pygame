@@ -11,17 +11,28 @@ from screen import Screen
 from ship import Ship
 from star import Star
 from text import Text
-from asteroid import Asteroid
 from ammo import Ammo
+from boss import Boss
 
 settings = Settings()
 collision = settings.collision
 screen = Screen(settings)
 ship = Ship(screen, settings)
 star = Star(screen, settings)
-pause = Text(screen, "PAUSE", screen.rect.centerx - 40, screen.rect.centery)
-score = Text(screen, "BOSS ARRIVES: {:,}", screen.rect.left, screen.rect.top + 44)
-record = Text(screen, "PREVIOS RECORD: {:,}", screen.rect.left, screen.rect.top + 22)
+pause = Text(screen, "PAUSE", screen.rect.centerx, screen.rect.centery - 44)
+score = Text(screen, "SCORE: {:,}", screen.rect.centerx, screen.rect.centery)
+record = Text(screen, "PREVIOS RECORD: {:,}", screen.rect.centerx, screen.rect.centery - 22)
+
+def create_boss(stats):
+    # Создать босса для теста
+    boss = Boss(screen, settings)
+    settings.bosses.append(boss)
+    settings.boss_score = 1
+    ship.surface = settings.shield_ship_surface
+    stats.game_active = False
+    stats.weapon_active = True
+    stats.shield_active = True
+    stats.boss_active = True
 
 def collision_test(object, wm, hm):
     # Вывод коллизий на экран.
@@ -35,7 +46,7 @@ def check_events(stats):
                 sys.exit()
             if event.type == pygame.KEYDOWN and event.key == pygame.K_q:
                 stats.game_active = False
-                score.update_text(settings.update_score_left())
+                score.update_text(settings.score)
     if not stats.game_active:
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
@@ -84,6 +95,37 @@ def update_smalls(stats):
             settings.smalls.remove(small)
             reset_after_collision(stats)
 
+def update_eyes(stats):
+    # Обновить расположение объектов на экране.
+    for eye in settings.eyes:
+        eye.update()
+        if collision(ship.rect, 0.6, 0.9).colliderect(collision(eye.rect, 0.7, 0.7)):
+            settings.eyes.remove(eye)
+            reset_after_collision(stats)
+
+def update_asteroids(stats):
+    # Обновить расположение объектов на экране.
+    for asteroid in settings.asteroids:
+        asteroid.update()
+        if collision(ship.rect, 0.6, 0.9).colliderect(collision(asteroid.rect, 0.7, 0.7)):
+            settings.asteroids.remove(asteroid)
+            reset_after_collision(stats)
+
+def update_tusks(stats):
+    # Обновить расположение объектов на экране.
+    for tusk in settings.tusks:
+        tusk.update()
+        if collision(ship.rect, 0.6, 0.9).colliderect(collision(tusk.rect, 0.9, 0.6)):
+            settings.tusks.remove(tusk)
+            reset_after_collision(stats)
+
+def update_bosses(stats):
+    # Обновить расположение объектов на экране.
+    for boss in settings.bosses:
+        boss.update()
+        if collision(ship.rect, 0.6, 0.9).colliderect(collision(boss.rect, 0.8, 0.6)):
+            reset_after_collision(stats)
+
 def update_balls(stats):
     # Обновить расположение объектов на экране.
     for ball in settings.balls:
@@ -95,6 +137,9 @@ def update_balls(stats):
         if stats.shield_active:
             if collision(ball.rect, 0.7, 0.7).collidepoint(ship.rect.midtop):
                 ball.move_down = False
+                ball.surface = settings.alien_ball_surface
+            if collision(ball.rect, 0.7, 0.7).collidepoint(ship.rect.midbottom):
+                ball.move_down = True
                 ball.surface = settings.alien_ball_surface
             if collision(ball.rect, 0.7, 0.7).collidepoint(ship.rect.midleft):
                 ball.move_left = True
@@ -125,26 +170,11 @@ def update_ammos(stats):
                 ship.surface = settings.shield_ship_surface
             if ammo.type == 'alien':
                 settings.score += 1500
-
-def update_asteroids():
-    # Обновить расположение объектов на экране.
-    for asteroid in settings.asteroids:
-        asteroid.update()
-        if collision(asteroid.rect, 0.8, 0.8).collidepoint(ship.rect.midtop):
-            asteroid.move_down = False
-        if collision(asteroid.rect, 0.8, 0.8).collidepoint(ship.rect.midleft):
-            asteroid.move_left = True
-            asteroid.move_right = False
-            asteroid.move_down = False
-        if collision(asteroid.rect, 0.8, 0.8).collidepoint(ship.rect.midright):
-            asteroid.move_left = False
-            asteroid.move_right = True
-            asteroid.move_down = False
-
-def update_eyes():
-    # Обновить расположение объектов на экране.
-    for eye in settings.eyes:
-        eye.update()
+                settings.bullet_limit += 1
+            if ammo.type == 'brain':
+                stats.boss_active = True
+                boss = Boss(screen, settings)
+                settings.bosses.append(boss)
 
 def update_bullets():
     # Обновить расположение объектов на экране.
@@ -166,7 +196,6 @@ def reset_after_collision(stats):
         stats.weapon_active = False
         ship.surface = settings.ship_surface
         if len(settings.stars) > 0:
-            settings.star_left -= 1
             settings.player_hit()
             drop_star = random.choice(settings.stars)
             settings.stars.remove(drop_star)
@@ -176,17 +205,17 @@ def reset_after_collision(stats):
             if settings.score > settings.record:
                 settings.record = settings.score
                 record.update_text(settings.record)
-            score.update_text(settings.update_score_left())
+            score.update_text(settings.score)
             ship.rect.centerx = screen.rect.centerx
             ship.rect.bottom = screen.rect.bottom
             settings.new_game()
 
-def append_invader(stats):
+def append_invader():
     # Создание объектов в списке
     if random.randrange(0,100) < settings.invader_chance and len(settings.invaders) < settings.invader_allowed:
         invader = Invader(screen, settings)
         settings.invaders.append(invader)
-        if not stats.weapon_active and settings.invader_sf_min < settings.invader_sf_max - 1:
+        if ship.surface == settings.ship_surface and settings.invader_sf_min < settings.invader_sf_max - 1:
             settings.invader_sf_min += 0.1
 
 def append_ball():
@@ -209,12 +238,6 @@ def append_ammo():
         ammo = Ammo(screen, settings, 'weapon')
         settings.ammos.append(ammo)
 
-def append_asteroid():
-    # Создание объектов в списке
-    if random.randrange(0,1000) < settings.asteroid_chance and len(settings.asteroids) < settings.asteroid_allowed:
-        asteroid = Asteroid(screen, settings)
-        settings.asteroids.append(asteroid)
-
 def append_star():
     # Создание объектов в списке
     if len(settings.stars) < settings.star_left:
@@ -232,15 +255,19 @@ def blit_screen(stats):
         star.blitme()
     for star in settings.drop_stars:
         star.blitme()
-    for asteroid in settings.asteroids:
-        asteroid.blitme()
     for ammo in settings.ammos:
         ammo.blitme()
     ship.blitme()
     for bullet in settings.bullets:
         bullet.blitme()
+    for boss in settings.bosses:
+        boss.blitme()
     for invader in settings.invaders:
         invader.blitme()
+    for asteroid in settings.asteroids:
+        asteroid.blitme()
+    for tusk in settings.tusks:
+        tusk.blitme()
     for small in settings.smalls:
         small.blitme()
     for eye in settings.eyes:

@@ -6,7 +6,7 @@ class Ball():
         # Атрибуты класса
         self.screen = screen
         self.settings = settings
-        self.life_left = 5
+        self.life_left = 3
         self.speed_factor = random.randrange(int(settings.ball_sf_min), int(settings.ball_sf_max))
         self.move_left = False
         self.move_right = False
@@ -48,6 +48,10 @@ class Ball():
             self.settings.score += 15
             self.settings.ball_chance = self.settings.ball_chance * self.settings.ball_chance_reduction
         if self.surface == self.settings.alien_ball_surface:
+            for boss in self.settings.bosses:
+                if self.settings.collision(self.rect, 0.7, 0.7).colliderect(self.settings.collision(boss.rect, 0.8, 0.6)):
+                    self.settings.balls.remove(self)
+                    boss.life_left -= 50
             for invader in self.settings.invaders:
                 if self.settings.collision(self.rect, 0.7, 0.7).colliderect(self.settings.collision(invader.rect, 0.8, 0.6)):
                     self.settings.invaders.remove(invader)
@@ -56,14 +60,39 @@ class Ball():
                 if self.settings.collision(self.rect, 0.7, 0.7).colliderect(self.settings.collision(small.rect, 0.8, 0.6)):
                     self.settings.smalls.remove(small)
                     self.settings.score += 3
+            for tusk in self.settings.tusks:
+                if self.settings.collision(self.rect, 0.7, 0.7).colliderect(self.settings.collision(tusk.rect, 0.9, 0.6)):
+                    self.settings.tusks.remove(tusk)
+                    self.settings.score += 3
+            for asteroid in self.settings.asteroids:
+                if self.settings.collision(self.rect, 0.7, 0.7).colliderect(self.settings.collision(asteroid.rect, 0.7, 0.7)):
+                    self.settings.asteroids.remove(asteroid)
+                    self.settings.score += 3
             for eye in self.settings.eyes:
                 if self.settings.collision(self.rect, 0.7, 0.7).colliderect(self.settings.collision(eye.rect, 0.7, 0.7)):
-                    ammo = Ammo(self.screen, self.settings, 'alien')
+                    if self.settings.score > self.settings.boss_score and not self.settings.bosses:
+                        ammo = Ammo(self.screen, self.settings, 'brain')
+                    else:
+                        ammo = Ammo(self.screen, self.settings, 'alien')
                     ammo.rect.center = eye.rect.center
                     self.settings.ammos.append(ammo)
                     self.settings.eyes.remove(eye)
                     self.settings.score += 150
                     self.settings.eye_chance = self.settings.eye_chance * self.settings.eye_chance_reduction
+        if self.surface == self.settings.ball_surface:
+            for asteroid in self.settings.asteroids:
+                if self.settings.collision(self.rect, 0.7, 0.7).collidepoint(asteroid.rect.midtop):
+                    self.move_down = False
+                if self.settings.collision(self.rect, 0.7, 0.7).collidepoint(asteroid.rect.midbottom):
+                    self.move_down = True
+                if self.settings.collision(self.rect, 0.7, 0.7).collidepoint(asteroid.rect.midleft):
+                    self.move_left = True
+                    self.move_right = False
+                    self.move_down = False
+                if self.settings.collision(self.rect, 0.7, 0.7).collidepoint(asteroid.rect.midright):
+                    self.move_left = False
+                    self.move_right = True
+                    self.move_down = False
 
     def blitme(self):
         # Вывод изображения на экран
