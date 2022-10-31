@@ -3,7 +3,8 @@ import random
 class Star():
     def __init__(self, screen, settings):
         # Атрибуты класса
-        self.screen = screen.surface
+        self.screen = screen
+        self.settings = settings
         self.speed_factor = settings.star_speedf
         self.move_direction = random.randrange(0,9)
         # Загрузка изображения и получение прямоугольника
@@ -20,7 +21,9 @@ class Star():
         if self.move_direction > 5:
             self.rect.centerx -= self.speed_factor
         self.rect.centery += self.speed_factor
+        if not self.screen.rect.colliderect(self.rect):
+            self.settings.drop_stars.remove(self)
 
     def blitme(self):
         # Вывод изображения на экран
-        self.screen.blit(self.surface, self.rect)
+        self.screen.surface.blit(self.surface, self.rect)

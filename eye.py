@@ -1,5 +1,6 @@
 import random
 import pygame
+from small import Small
 
 class Eye():
     def __init__(self, screen, settings):
@@ -8,7 +9,8 @@ class Eye():
         self.last_small_time = 0
         self.reload_small_time = 1000
         self.small_left = 0
-        self.screen = screen.surface
+        self.screen = screen
+        self.settings = settings
         self.speed_factor = random.randrange(int(settings.eye_sf_min), int(settings.eye_sf_max))
         # Загрузка изображения и получение прямоугольника
         self.surface = settings.eye_surface
@@ -27,6 +29,14 @@ class Eye():
             self.rect.centerx -= self.speed_factor
         if not self.move_left:
             self.rect.centerx += self.speed_factor
+        if not self.screen.rect.collidepoint(self.rect.midright):
+            self.move_left = True
+        if not self.screen.rect.collidepoint(self.rect.midleft):
+            self.move_left = False
+        if self.small_left > 0:
+            self.small_left -= 1
+            self.small = Small(self.screen, self.settings, self.rect.center)
+            self.settings.smalls.append(self.small)
         # Флаг перезарядки и фиксация времени начала
         if not self.reload_small and self.small_left == 0:
             self.reload_small = True
@@ -38,4 +48,4 @@ class Eye():
 
     def blitme(self):
         # Вывод изображения на экран
-        self.screen.blit(self.surface, self.rect)
+        self.screen.surface.blit(self.surface, self.rect)

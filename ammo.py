@@ -3,7 +3,8 @@ import random
 class Ammo():
     def __init__(self, screen, settings, type):
         # Атрибуты класса
-        self.screen = screen.surface
+        self.screen = screen
+        self.settings = settings
         self.type = type
         self.speed_factor = random.randrange(settings.ammo_sf_min, settings.ammo_sf_max)   
         # Загрузка изображения и получение прямоугольника
@@ -21,7 +22,9 @@ class Ammo():
     def update(self):
         # Обновление координат изображения
         self.rect.centery += self.speed_factor
+        if not self.screen.rect.colliderect(self.rect):
+            self.settings.ammos.remove(self)
 
     def blitme(self):
         # Вывод изображения на экран
-        self.screen.blit(self.surface, self.rect)
+        self.screen.surface.blit(self.surface, self.rect)

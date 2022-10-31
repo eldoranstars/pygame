@@ -13,7 +13,7 @@ class Text():
         self.update_text(score)
         self.rect = self.surface.get_rect()
         # Получение изначальных координат изображения
-        self.rect.centerx = posx
+        self.rect.left = posx
         self.rect.bottom = posy
 
     def update_text(self, score):

@@ -3,8 +3,9 @@ import pygame
 class Settings():
     def __init__(self):
         # Параметры игры
-        self.star_limit = 5
+        self.star_limit = 3
         self.record = 0
+        self.boss_score = 5555
         self.ship_sf = 4
         self.star_speedf = self.ship_sf - 1
         # Параметры экрана
@@ -21,6 +22,7 @@ class Settings():
         self.screen_bg = pygame.image.load('images/space.png')
         self.star_surface = pygame.image.load('images/star.png')
         self.ship_surface = pygame.image.load('images/ship.png')
+        self.weapon_ship_surface = pygame.image.load('images/weapon-ship.png')
         self.shield_ship_surface = pygame.image.load('images/shield-ship.png')
         self.invader_surface = pygame.image.load('images/invader.png')
         self.small_surface = pygame.image.load('images/small.png')
@@ -77,8 +79,22 @@ class Settings():
         self.drop_stars = []
         self.star_left = self.star_limit
         self.score = 0
-        self.boss_score = 5555
+        self.score_left = self.boss_score
         self.reload_bullet = False
         self.reload_bullet_time = 1000
         self.last_bullet_time = 0
         self.player_hit()
+
+    def update_score_left(self):
+        # Подсчет очков до прибытия босса
+        self.score_left = self.boss_score - self.score
+        if self.score_left:
+            return self.score_left
+        else:
+            return 0
+
+    def collision(self, rect, wm, hm):
+        # Получаем дополнительный прямоугольник для обработки коллизий.
+        collision = pygame.Rect(rect.center, (rect.width * wm, rect.height * hm))
+        collision.center = rect.center
+        return collision

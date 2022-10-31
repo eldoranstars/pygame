@@ -1,9 +1,11 @@
 import random
+from ammo import Ammo
 
 class Ball():
     def __init__(self, screen, settings):
         # Атрибуты класса
-        self.screen = screen.surface
+        self.screen = screen
+        self.settings = settings
         self.life_left = 5
         self.speed_factor = random.randrange(int(settings.ball_sf_min), int(settings.ball_sf_max))
         self.move_left = False
@@ -24,14 +26,45 @@ class Ball():
     def update(self):
         # Обновление координат изображения
         if self.move_left:
-            self.rect.centerx += self.speed_factor
-        if self.move_right:
             self.rect.centerx -= self.speed_factor
+        if self.move_right:
+            self.rect.centerx += self.speed_factor
         if self.move_down:
             self.rect.centery += self.speed_factor
-        else:
+        if not self.move_down:
             self.rect.centery -= self.speed_factor
+        if not self.screen.rect.collidepoint(self.rect.midleft):
+            self.move_left = False
+            self.move_right = True
+        if not self.screen.rect.collidepoint(self.rect.midright):
+            self.move_right = False
+            self.move_left = True
+        if not self.screen.rect.collidepoint(self.rect.midbottom):
+            self.move_down = False
+        if not self.screen.rect.collidepoint(self.rect.midtop) and self.surface == self.settings.ball_surface:
+            self.move_down = True
+        if not self.screen.rect.colliderect(self.rect):
+            self.settings.balls.remove(self)
+            self.settings.score += 15
+            self.settings.ball_chance = self.settings.ball_chance * self.settings.ball_chance_reduction
+        if self.surface == self.settings.alien_ball_surface:
+            for invader in self.settings.invaders:
+                if self.settings.collision(self.rect, 0.7, 0.7).colliderect(self.settings.collision(invader.rect, 0.8, 0.6)):
+                    self.settings.invaders.remove(invader)
+                    self.settings.score += 3
+            for small in self.settings.smalls:
+                if self.settings.collision(self.rect, 0.7, 0.7).colliderect(self.settings.collision(small.rect, 0.8, 0.6)):
+                    self.settings.smalls.remove(small)
+                    self.settings.score += 3
+            for eye in self.settings.eyes:
+                if self.settings.collision(self.rect, 0.7, 0.7).colliderect(self.settings.collision(eye.rect, 0.7, 0.7)):
+                    ammo = Ammo(self.screen, self.settings, 'alien')
+                    ammo.rect.center = eye.rect.center
+                    self.settings.ammos.append(ammo)
+                    self.settings.eyes.remove(eye)
+                    self.settings.score += 150
+                    self.settings.eye_chance = self.settings.eye_chance * self.settings.eye_chance_reduction
 
     def blitme(self):
         # Вывод изображения на экран
-        self.screen.blit(self.surface, self.rect)
+        self.screen.surface.blit(self.surface, self.rect)
