@@ -6,7 +6,7 @@ class Ball():
         # Атрибуты класса
         self.screen = screen
         self.settings = settings
-        self.life_left = 3
+        self.life_left = 4
         self.speed_factor = random.randrange(int(settings.ball_sf_min), int(settings.ball_sf_max))
         self.move_left = False
         self.move_right = False

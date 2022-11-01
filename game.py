@@ -6,7 +6,7 @@ pygame.init()
 pygame.mouse.set_visible(False)
 pygame.display.set_caption("Invader Invasion")
 stats = GameStats()
-# gf.create_boss(stats)
+gf.create_boss(stats)
 
 while True:
     gf.check_events(stats)

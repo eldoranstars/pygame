@@ -16,8 +16,9 @@ class Boss():
         self.tusk_left = 0
         self.screen = screen
         self.settings = settings
-        self.speed_factor = settings.boss_sf
-        self.life_left = 500
+        self.speed_factor = 1
+        self.life_limit = 280
+        self.life_left = self.life_limit
         self.move_left = False
         self.move_down = True
         self.move_direction = random.randrange(0,2)
@@ -36,6 +37,14 @@ class Boss():
         # Обновление координат изображения
         if not self.life_left:
             print('boss died!')
+        if self.speed_factor <= self.settings.boss_sf:
+            self.speed_factor += 0.001
+        if self.life_left < self.life_limit * 0.25:
+            self.surface = self.settings.boss25_surface
+        elif self.life_left < self.life_limit * 0.5:
+            self.surface = self.settings.boss50_surface
+        elif self.life_left < self.life_limit * 0.75:
+            self.surface = self.settings.boss75_surface
         if self.move_left:
             self.rect.centerx -= self.speed_factor
         if not self.move_left:
@@ -55,10 +64,14 @@ class Boss():
         # Создание флота
         if self.asteroid_left > 0 and not self.move_down:
             self.asteroid_left -= 1
-            self.asteroid = Asteroid(self.screen, self.settings, self.rect.midleft)
-            self.settings.asteroids.append(self.asteroid)
-            self.asteroid = Asteroid(self.screen, self.settings, self.rect.midright)
-            self.settings.asteroids.append(self.asteroid)
+            if self.settings.eyes:
+                self.asteroid = Asteroid(self.screen, self.settings, self.rect.midleft)
+                self.settings.asteroids.append(self.asteroid)
+                self.asteroid = Asteroid(self.screen, self.settings, self.rect.midright)
+                self.settings.asteroids.append(self.asteroid)
+            else:
+                self.asteroid = Asteroid(self.screen, self.settings, self.rect.center)
+                self.settings.asteroids.append(self.asteroid) 
         # Флаг перезарядки и фиксация времени начала
         if not self.reload_asteroid and self.asteroid_left == 0:
             self.reload_asteroid = True

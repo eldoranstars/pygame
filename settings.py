@@ -15,9 +15,10 @@ class Settings():
         # Параметры пули
         self.bullet_width = 3
         self.bullet_height = 9
-        self.bullet_limit = 1
         self.bullet_sf = 15
         self.bullet_color = (60, 60, 60)
+        self.bullet_limit = 1
+        self.reload_bullet_time_limit = 900
         # Параметры изображений
         self.screen_bg = pygame.image.load('images/space.png')
         self.star_surface = pygame.image.load('images/star.png')
@@ -30,6 +31,9 @@ class Settings():
         self.tusk_surface = pygame.image.load('images/tusk.png')
         self.ball_surface = pygame.image.load('images/ball.png')
         self.boss_surface = pygame.image.load('images/boss.png')
+        self.boss75_surface = pygame.image.load('images/boss75.png')
+        self.boss50_surface = pygame.image.load('images/boss50.png')
+        self.boss25_surface = pygame.image.load('images/boss25.png')
         self.eye_surface = pygame.image.load('images/eye.png')
         self.ammo_surface = pygame.image.load('images/laser-gun.png')
         self.alien_surface = pygame.image.load('images/alien.png')
@@ -41,7 +45,7 @@ class Settings():
         self.screen_surface = pygame.display.set_mode((self.screen_width, self.screen_height), pygame.SCALED, vsync=1)
         self.bullet_surface = pygame.Surface((self.bullet_width, self.bullet_height))
         # Параметры чужих
-        self.boss_sf = self.ship_sf - 1
+        self.boss_sf = self.ship_sf - 2
         self.tusk_sf = 5
         self.small_sf_min = 1
         self.small_sf_max = 8
@@ -76,8 +80,12 @@ class Settings():
         self.star_left -= 1
         self.invader_sf_min = 1
         self.invader_sf_max = 9
-        self.ball_chance = 8
-        self.eye_chance = 8
+        if self.bosses:
+            self.ball_chance = 16
+            self.eye_chance = 16
+        if not self.bosses:
+            self.ball_chance = 8
+            self.eye_chance = 8
         self.bullet_left = self.bullet_limit - self.bullet_limit
 
     def new_game(self):
@@ -87,9 +95,9 @@ class Settings():
         self.bosses = []
         self.star_left = self.star_limit
         self.score = 0
+        self.reload_power_time = 3300
         self.reload_bullet = False
-        self.reload_bullet_time = 1000
-        self.last_bullet_time = 0
+        self.reload_bullet_time = self.reload_bullet_time_limit
         self.player_hit()
 
     def collision(self, rect, wm, hm):

@@ -27,7 +27,10 @@ def create_boss(stats):
     # Создать босса для теста
     boss = Boss(screen, settings)
     settings.bosses.append(boss)
-    settings.boss_score = 1
+    settings.score = 1
+    settings.reload_bullet_time = 1100
+    settings.ball_chance = 16
+    settings.eye_chance = 16
     ship.surface = settings.shield_ship_surface
     stats.game_active = False
     stats.weapon_active = True
@@ -48,6 +51,8 @@ def check_events(stats):
                 stats.game_active = False
                 score.update_text(settings.score)
     if not stats.game_active:
+        if not settings.score:
+            stats.boss_active = False
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 sys.exit()
@@ -78,6 +83,11 @@ def update_ship(stats):
         if settings.reload_bullet and pygame.time.get_ticks() - settings.last_bullet_time > settings.reload_bullet_time:
             settings.reload_bullet = False
             settings.bullet_left = settings.bullet_limit
+    if stats.power_active:
+        # Снятие флага перезарядки на основе дельты времени и пополнение боезапаса
+        if pygame.time.get_ticks() - settings.last_power_time > settings.reload_power_time:
+            stats.power_active = False
+            settings.reload_bullet_time = settings.reload_bullet_time_limit
 
 def update_invaders(stats):
     # Обновить расположение объектов на экране.
@@ -140,6 +150,8 @@ def update_balls(stats):
                 ball.surface = settings.alien_ball_surface
             if collision(ball.rect, 0.7, 0.7).collidepoint(ship.rect.midbottom):
                 ball.move_down = True
+                if ball.speed_factor < settings.ball_sf_max:
+                    ball.speed_factor += 1
                 ball.surface = settings.alien_ball_surface
             if collision(ball.rect, 0.7, 0.7).collidepoint(ship.rect.midleft):
                 ball.move_left = True
@@ -169,12 +181,16 @@ def update_ammos(stats):
                 stats.shield_active = True
                 ship.surface = settings.shield_ship_surface
             if ammo.type == 'alien':
+                stats.power_active = True
+                settings.reload_bullet_time = 150
                 settings.score += 1500
-                settings.bullet_limit += 1
+                settings.last_power_time = pygame.time.get_ticks()
             if ammo.type == 'brain':
                 stats.boss_active = True
                 boss = Boss(screen, settings)
                 settings.bosses.append(boss)
+                settings.ball_chance = 16
+                settings.eye_chance = 16
 
 def update_bullets():
     # Обновить расположение объектов на экране.
@@ -200,14 +216,14 @@ def reset_after_collision(stats):
             drop_star = random.choice(settings.stars)
             settings.stars.remove(drop_star)
             settings.drop_stars.append(drop_star)
+            ship.rect.centerx = screen.rect.centerx
+            ship.rect.bottom = screen.rect.bottom
         else:
             stats.game_active = False
             if settings.score > settings.record:
                 settings.record = settings.score
                 record.update_text(settings.record)
             score.update_text(settings.score)
-            ship.rect.centerx = screen.rect.centerx
-            ship.rect.bottom = screen.rect.bottom
             settings.new_game()
 
 def append_invader():
@@ -240,7 +256,7 @@ def append_ammo():
 
 def append_star():
     # Создание объектов в списке
-    if len(settings.stars) < settings.star_left:
+    if len(settings.stars) <= settings.star_left:
         star = Star(screen, settings)
         settings.stars.append(star)
     for star in settings.drop_stars:
