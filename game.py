@@ -6,6 +6,9 @@ pygame.init()
 pygame.mouse.set_visible(False)
 pygame.display.set_caption("Invader Invasion")
 stats = GameStats()
+bullet_sound = pygame.mixer.Sound('images/bullet.mp3')
+intro_sound = pygame.mixer.Sound('images/intro.mp3')
+intro_sound.play(-1)
 if pygame.joystick.get_count():
     joystick = pygame.joystick.Joystick(0)
 else:
@@ -18,7 +21,7 @@ while True:
         gf.update_final_text()
         gf.append_messages()
     if stats.game_active:
-        gf.update_ship(stats, joystick)
+        gf.update_ship(stats, joystick, bullet_sound)
         gf.update_bosses(stats)
         gf.update_invaders(stats)
         gf.update_smalls(stats)

@@ -23,6 +23,20 @@ pause = Text(screen, "Q:PAUSE|SPACE:WEAPON", screen.rect.centerx, screen.rect.ce
 score = Text(screen, "SCORE: {:,}", screen.rect.centerx, screen.rect.centery)
 record = Text(screen, "PREVIOS RECORD: {:,}", screen.rect.centerx, screen.rect.centery - 22)
 
+def create_boss(stats):
+    # Создать босса для теста
+    boss = Boss(screen, settings)
+    settings.bosses.append(boss)
+    settings.score = 1
+    settings.reload_bullet_time = 1100
+    settings.ball_chance = 16
+    settings.eye_chance = 16
+    ship.surface = settings.shield_ship_surface
+    stats.game_active = False
+    stats.weapon_active = True
+    stats.shield_active = True
+    stats.boss_active = True
+
 def collision_test(object, wm, hm):
     # Вывод коллизий на экран.
     screen.surface.blit(pygame.Surface((collision(object.rect, wm, hm).width,collision(object.rect, wm, hm).height)), collision(object.rect, wm, hm))
@@ -43,18 +57,18 @@ def check_events(stats, joystick):
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 sys.exit()
             if event.type == pygame.KEYDOWN and event.key == pygame.K_q:
-                pygame.mixer.music.stop()
                 stats.game_active = True
                 stats.final_active = False
             if joystick:
                 if event.type == pygame.JOYBUTTONDOWN and joystick.get_button(6) == 1:
                     sys.exit()
                 if event.type == pygame.JOYBUTTONDOWN and joystick.get_button(7) == 1:
-                    pygame.mixer.music.stop()
                     stats.game_active = True
                     stats.final_active = False
+                    pygame.mixer.music.stop()
+                    pygame.mixer.unpause()
 
-def update_ship(stats, joystick):
+def update_ship(stats, joystick, sound):
     # Отслеживание нажатий клавиатуры и мыши.
     key = pygame.key.get_pressed()
     if key[pygame.K_RIGHT] == 1 and ship.rect.right < settings.screen_width:
@@ -69,6 +83,7 @@ def update_ship(stats, joystick):
         settings.bullet_left -= 1
         bullet = Bullet(screen, settings, ship)
         settings.bullets.append(bullet)
+        sound.play()
     if joystick:
         if joystick.get_axis(0) and joystick.get_axis(0) > 0.2 and ship.rect.right < settings.screen_width:
             ship.rect.centerx += settings.ship_sf
@@ -82,6 +97,7 @@ def update_ship(stats, joystick):
             settings.bullet_left -= 1
             bullet = Bullet(screen, settings, ship)
             settings.bullets.append(bullet)
+            sound.play()
     if stats.weapon_active:
         # Флаг перезарядки и фиксация времени начала
         if not settings.reload_bullet and settings.bullet_left == 0:
@@ -143,7 +159,8 @@ def update_bosses(stats):
         boss.update()
         if not boss.life_left:
             stats.final_active = True
-            pygame.mixer.music.load('images/xx-intro.mp3')
+            pygame.mixer.pause()
+            pygame.mixer.music.load('images/outro.mp3')
             pygame.mixer.music.play()
             reset_after_collision(stats)
         if collision(ship.rect, 0.6, 0.9).colliderect(collision(boss.rect, 0.8, 0.6)):
@@ -201,6 +218,7 @@ def update_ammos(stats):
             if ammo.type == 'brain':
                 stats.boss_active = True
                 boss = Boss(screen, settings)
+                settings.ammos.clear()
                 settings.bosses.append(boss)
                 settings.ball_chance = 16
                 settings.eye_chance = 16
@@ -248,6 +266,7 @@ def reset_after_collision(stats):
             ship.rect.bottom = screen.rect.bottom
         else:
             stats.game_active = False
+            stats.boss_active = False
             if settings.score > settings.record:
                 settings.record = settings.score
                 record.update_text(settings.record)
