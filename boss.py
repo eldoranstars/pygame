@@ -17,7 +17,7 @@ class Boss():
         self.screen = screen
         self.settings = settings
         self.speed_factor = 1
-        self.life_limit = 280
+        self.life_limit = 180
         self.life_left = self.life_limit
         self.move_left = False
         self.move_down = True
@@ -35,8 +35,6 @@ class Boss():
 
     def update(self):
         # Обновление координат изображения
-        if not self.life_left:
-            print('boss died!')
         if self.speed_factor <= self.settings.boss_sf:
             self.speed_factor += 0.001
         if self.life_left < self.life_limit * 0.25:

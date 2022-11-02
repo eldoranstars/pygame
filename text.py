@@ -4,7 +4,7 @@ pygame.font.init()
 class Text():
     def __init__(self, screen, msg, posx, posy, score = 0):
         # Атрибуты класса
-        self.screen = screen.surface
+        self.screen = screen
         self.msg = msg
         self.button_color = (150, 150, 255)
         self.text_color = (0, 0, 0)
@@ -19,8 +19,12 @@ class Text():
     def update_text(self, score):
         # Обновление изображения
         self.score_msg = self.msg.format(score)
-        self.surface = self.font.render(self.score_msg, True, self.text_color, self.button_color)
+        self.surface = self.font.render(self.score_msg, True, self.text_color)
+
+    def scroll_text(self):
+        # Обновление координат изображения
+        self.rect.centery -= 1
 
     def blitme(self):
         # Вывод изображения на экран
-        self.screen.blit(self.surface, self.rect)
+        self.screen.surface.blit(self.surface, self.rect)

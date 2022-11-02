@@ -19,7 +19,7 @@ collision = settings.collision
 screen = Screen(settings)
 ship = Ship(screen, settings)
 star = Star(screen, settings)
-pause = Text(screen, "PAUSE", screen.rect.centerx, screen.rect.centery - 44)
+pause = Text(screen, "Q:PAUSE|SPACE:WEAPON", screen.rect.centerx, screen.rect.centery - 44)
 score = Text(screen, "SCORE: {:,}", screen.rect.centerx, screen.rect.centery)
 record = Text(screen, "PREVIOS RECORD: {:,}", screen.rect.centerx, screen.rect.centery - 22)
 
@@ -28,7 +28,6 @@ def create_boss(stats):
     boss = Boss(screen, settings)
     settings.bosses.append(boss)
     settings.score = 1
-    settings.reload_bullet_time = 1100
     settings.ball_chance = 16
     settings.eye_chance = 16
     ship.surface = settings.shield_ship_surface
@@ -51,13 +50,13 @@ def check_events(stats):
                 stats.game_active = False
                 score.update_text(settings.score)
     if not stats.game_active:
-        if not settings.score:
-            stats.boss_active = False
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 sys.exit()
             if event.type == pygame.KEYDOWN and event.key == pygame.K_q:
+                pygame.mixer.music.stop()
                 stats.game_active = True
+                stats.final_active = False
 
 def update_ship(stats):
     # Отслеживание нажатий клавиатуры и мыши.
@@ -133,6 +132,11 @@ def update_bosses(stats):
     # Обновить расположение объектов на экране.
     for boss in settings.bosses:
         boss.update()
+        if not boss.life_left:
+            stats.final_active = True
+            pygame.mixer.music.load('images/xx-intro.mp3')
+            pygame.mixer.music.play()
+            reset_after_collision(stats)
         if collision(ship.rect, 0.6, 0.9).colliderect(collision(boss.rect, 0.8, 0.6)):
             reset_after_collision(stats)
 
@@ -202,10 +206,25 @@ def update_drop_stars():
     for star in settings.drop_stars:
         star.update()
 
+def update_final_text():
+    # Обновить расположение объектов на экране.
+    for message in settings.final_text:
+        message.scroll_text()
+
 def reset_after_collision(stats):
     # Обновить счет и экран после коллизии
-    sleep(0.5)
-    if stats.shield_active:
+    sleep(0.6)
+    if stats.final_active:
+        stats.game_active = False
+        stats.boss_active = False
+        stats.shield_active = False
+        stats.weapon_active = False
+        if settings.score > settings.record:
+            settings.record = settings.score
+            record.update_text(settings.record)
+        score.update_text(settings.score)
+        settings.new_game()
+    elif stats.shield_active:
         stats.shield_active = False
         ship.surface = settings.weapon_ship_surface
     else:
@@ -264,6 +283,14 @@ def append_star():
             settings.drop_stars.remove(star)
             settings.stars.append(star)
 
+def append_messages():
+    # Создание объектов в списке
+    for message in settings.messages:
+        settings.first_line += 33
+        new_message = Text(screen, message, screen.rect.centerx, screen.rect.bottom + settings.first_line)
+        settings.final_text.append(new_message)
+    settings.messages.clear()
+
 def blit_screen(stats):
     # Вывод изображений на экран.
     screen.blitme()
@@ -290,8 +317,11 @@ def blit_screen(stats):
         eye.blitme()
     for ball in settings.balls:
         ball.blitme()
-    if not stats.game_active:
+    if not stats.game_active and not stats.final_active:
         pause.blitme()
         score.blitme()
         record.blitme()
+    if stats.final_active:
+        for message in settings.final_text:
+            message.blitme()
     pygame.display.update()

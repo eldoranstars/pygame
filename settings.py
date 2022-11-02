@@ -5,7 +5,7 @@ class Settings():
         # Параметры игры
         self.star_limit = 3
         self.record = 0
-        self.boss_score = 5555
+        self.boss_score = 4444
         self.ship_sf = 4
         self.star_speedf = self.ship_sf - 1
         # Параметры экрана
@@ -64,6 +64,10 @@ class Settings():
         self.ammo_sf_max = 2
         self.ammo_chance = 1
         self.ammo_allowed = 1
+        # Титры
+        self.final_text = []
+        self.messages = ['Producer:', 'eldoranstars', '', 'Quality Assurance:', 'eldoranstars', '', 'Gameplay Developer:', 'eldoranstars', '', \
+            'Tools Developer:', 'eldoranstars', '', 'UI Developer:', 'eldoranstars', '', 'Audio Developer:', 'eldoranstars', '', 'Lead DevOps:', 'eldoranstars']
         # Динамические параметры игры
         self.new_game()
 
@@ -95,6 +99,7 @@ class Settings():
         self.bosses = []
         self.star_left = self.star_limit
         self.score = 0
+        self.first_line = 0
         self.reload_power_time = 3300
         self.reload_bullet = False
         self.reload_bullet_time = self.reload_bullet_time_limit
