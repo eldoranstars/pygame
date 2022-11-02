@@ -84,12 +84,8 @@ class Settings():
         self.star_left -= 1
         self.invader_sf_min = 1
         self.invader_sf_max = 9
-        if self.bosses:
-            self.ball_chance = 16
-            self.eye_chance = 16
-        if not self.bosses:
-            self.ball_chance = 8
-            self.eye_chance = 8
+        self.eye_chance = 8
+        self.ball_chance = 16
         self.bullet_left = self.bullet_limit - self.bullet_limit
 
     def new_game(self):

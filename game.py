@@ -6,16 +6,19 @@ pygame.init()
 pygame.mouse.set_visible(False)
 pygame.display.set_caption("Invader Invasion")
 stats = GameStats()
-# gf.create_boss(stats)
+if pygame.joystick.get_count():
+    joystick = pygame.joystick.Joystick(0)
+else:
+    joystick = False
 
 while True:
-    gf.check_events(stats)
+    gf.check_events(stats, joystick)
     gf.blit_screen(stats)
     if stats.final_active and not stats.game_active:
         gf.update_final_text()
         gf.append_messages()
     if stats.game_active:
-        gf.update_ship(stats)
+        gf.update_ship(stats, joystick)
         gf.update_bosses(stats)
         gf.update_invaders(stats)
         gf.update_smalls(stats)

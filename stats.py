@@ -7,4 +7,3 @@ class GameStats():
         self.power_active = False
         self.shield_active = False
         self.boss_active = False
-        self.music_active = False

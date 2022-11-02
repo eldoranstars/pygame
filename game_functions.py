@@ -23,32 +23,21 @@ pause = Text(screen, "Q:PAUSE|SPACE:WEAPON", screen.rect.centerx, screen.rect.ce
 score = Text(screen, "SCORE: {:,}", screen.rect.centerx, screen.rect.centery)
 record = Text(screen, "PREVIOS RECORD: {:,}", screen.rect.centerx, screen.rect.centery - 22)
 
-def create_boss(stats):
-    # Создать босса для теста
-    boss = Boss(screen, settings)
-    settings.bosses.append(boss)
-    settings.score = 1
-    settings.ball_chance = 16
-    settings.eye_chance = 16
-    ship.surface = settings.shield_ship_surface
-    stats.game_active = False
-    stats.weapon_active = True
-    stats.shield_active = True
-    stats.boss_active = True
-
 def collision_test(object, wm, hm):
     # Вывод коллизий на экран.
     screen.surface.blit(pygame.Surface((collision(object.rect, wm, hm).width,collision(object.rect, wm, hm).height)), collision(object.rect, wm, hm))
 
-def check_events(stats):
+def check_events(stats, joystick):
     # Отслеживание событий клавиатуры и мыши.
     if stats.game_active:
         for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                sys.exit()
             if event.type == pygame.KEYDOWN and event.key == pygame.K_q:
                 stats.game_active = False
                 score.update_text(settings.score)
+            if joystick:
+                if event.type == pygame.JOYBUTTONDOWN and joystick.get_button(7) == 1:
+                    stats.game_active = False
+                    score.update_text(settings.score)
     if not stats.game_active:
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
@@ -57,8 +46,15 @@ def check_events(stats):
                 pygame.mixer.music.stop()
                 stats.game_active = True
                 stats.final_active = False
+            if joystick:
+                if event.type == pygame.JOYBUTTONDOWN and joystick.get_button(6) == 1:
+                    sys.exit()
+                if event.type == pygame.JOYBUTTONDOWN and joystick.get_button(7) == 1:
+                    pygame.mixer.music.stop()
+                    stats.game_active = True
+                    stats.final_active = False
 
-def update_ship(stats):
+def update_ship(stats, joystick):
     # Отслеживание нажатий клавиатуры и мыши.
     key = pygame.key.get_pressed()
     if key[pygame.K_RIGHT] == 1 and ship.rect.right < settings.screen_width:
@@ -73,6 +69,19 @@ def update_ship(stats):
         settings.bullet_left -= 1
         bullet = Bullet(screen, settings, ship)
         settings.bullets.append(bullet)
+    if joystick:
+        if joystick.get_axis(0) and joystick.get_axis(0) > 0.2 and ship.rect.right < settings.screen_width:
+            ship.rect.centerx += settings.ship_sf
+        if joystick.get_axis(0) and joystick.get_axis(0) < -0.2 and ship.rect.left > 0:
+            ship.rect.centerx -= settings.ship_sf
+        if joystick.get_axis(1) and joystick.get_axis(1) < -0.2 and ship.rect.top > 0:
+            ship.rect.centery -= settings.ship_sf
+        if joystick.get_axis(1) and joystick.get_axis(1) > 0.2 and ship.rect.bottom < settings.screen_height:
+            ship.rect.centery += settings.ship_sf
+        if joystick.get_axis(5) > 0.2 and settings.bullet_left > 0:
+            settings.bullet_left -= 1
+            bullet = Bullet(screen, settings, ship)
+            settings.bullets.append(bullet)
     if stats.weapon_active:
         # Флаг перезарядки и фиксация времени начала
         if not settings.reload_bullet and settings.bullet_left == 0:
@@ -83,7 +92,7 @@ def update_ship(stats):
             settings.reload_bullet = False
             settings.bullet_left = settings.bullet_limit
     if stats.power_active:
-        # Снятие флага перезарядки на основе дельты времени и пополнение боезапаса
+        # Снятие флага перезарядки на основе дельты времени
         if pygame.time.get_ticks() - settings.last_power_time > settings.reload_power_time:
             stats.power_active = False
             settings.reload_bullet_time = settings.reload_bullet_time_limit
