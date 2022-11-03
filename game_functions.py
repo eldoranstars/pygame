@@ -19,13 +19,14 @@ collision = settings.collision
 screen = Screen(settings)
 ship = Ship(screen, settings)
 star = Star(screen, settings)
-quit = Text(screen, "Esc to QUIT", screen.rect.centerx, screen.rect.centery - 110)
-pause = Text(screen, "Q to PAUSE", screen.rect.centerx, screen.rect.centery - 88)
-music = Text(screen, "M to switch MUSIC", screen.rect.centerx, screen.rect.centery - 66)
-space = Text(screen, "SPACE to use WEAPON", screen.rect.centerx, screen.rect.centery - 44)
+space = Text(screen, "SPACE to SHOOT", screen.rect.centerx, screen.rect.centery - 110)
+pause = Text(screen, "Q to PAUSE", screen.rect.centerx, screen.rect.centery - 132)
+whilepause = Text(screen, "while pause:", screen.rect.centerx, screen.rect.centery - 88)
+quit = Text(screen, "Esc to QUIT", screen.rect.centerx, screen.rect.centery - 66)
+music = Text(screen, "M to switch MUSIC", screen.rect.centerx, screen.rect.centery - 44)
 record = Text(screen, "PREVIOS RECORD: {:,}", screen.rect.centerx, screen.rect.centery - 22)
 score = Text(screen, "SCORE: {:,}", screen.rect.centerx, screen.rect.centery)
-buttons = [quit, pause, music, space, record, score] 
+buttons = [quit, pause, whilepause, music, space, record, score] 
 
 def create_boss(stats):
     # Создать босса для теста
