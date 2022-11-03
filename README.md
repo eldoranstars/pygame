@@ -18,3 +18,6 @@
 - Right Bumper     -- music while pause
 - Back Button      -- quit while pause
 - Start Button     -- pause
+
+Запуск игры - python3 game.py
+
