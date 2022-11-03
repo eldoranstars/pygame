@@ -9,13 +9,12 @@ stats = GameStats()
 bullet_sound = pygame.mixer.Sound('images/bullet.mp3')
 intro_sound = pygame.mixer.Sound('images/intro.mp3')
 intro_sound.play(-1)
+joystick = 0
 if pygame.joystick.get_count():
     joystick = pygame.joystick.Joystick(0)
-else:
-    joystick = False
 
 while True:
-    gf.check_events(stats, joystick)
+    gf.check_events(stats, joystick, intro_sound)
     gf.blit_screen(stats)
     if stats.final_active and not stats.game_active:
         gf.update_final_text()

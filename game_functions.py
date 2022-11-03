@@ -19,9 +19,13 @@ collision = settings.collision
 screen = Screen(settings)
 ship = Ship(screen, settings)
 star = Star(screen, settings)
-pause = Text(screen, "Q:PAUSE|SPACE:WEAPON", screen.rect.centerx, screen.rect.centery - 44)
-score = Text(screen, "SCORE: {:,}", screen.rect.centerx, screen.rect.centery)
+quit = Text(screen, "Esc to QUIT", screen.rect.centerx, screen.rect.centery - 110)
+pause = Text(screen, "Q to PAUSE", screen.rect.centerx, screen.rect.centery - 88)
+music = Text(screen, "M to switch MUSIC", screen.rect.centerx, screen.rect.centery - 66)
+space = Text(screen, "SPACE to use WEAPON", screen.rect.centerx, screen.rect.centery - 44)
 record = Text(screen, "PREVIOS RECORD: {:,}", screen.rect.centerx, screen.rect.centery - 22)
+score = Text(screen, "SCORE: {:,}", screen.rect.centerx, screen.rect.centery)
+buttons = [quit, pause, music, space, record, score] 
 
 def create_boss(stats):
     # Создать босса для теста
@@ -41,7 +45,7 @@ def collision_test(object, wm, hm):
     # Вывод коллизий на экран.
     screen.surface.blit(pygame.Surface((collision(object.rect, wm, hm).width,collision(object.rect, wm, hm).height)), collision(object.rect, wm, hm))
 
-def check_events(stats, joystick):
+def check_events(stats, joystick, sound):
     # Отслеживание событий клавиатуры и мыши.
     if stats.game_active:
         for event in pygame.event.get():
@@ -56,12 +60,22 @@ def check_events(stats, joystick):
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 sys.exit()
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_m:
+                if pygame.mixer.get_busy():
+                    sound.stop()
+                else:
+                    sound.play()
             if event.type == pygame.KEYDOWN and event.key == pygame.K_q:
                 stats.game_active = True
                 stats.final_active = False
             if joystick:
                 if event.type == pygame.JOYBUTTONDOWN and joystick.get_button(6) == 1:
                     sys.exit()
+                if event.type == pygame.JOYBUTTONDOWN and joystick.get_button(5) == 1:
+                    if pygame.mixer.get_busy():
+                        sound.stop()
+                    else:
+                        sound.play()
                 if event.type == pygame.JOYBUTTONDOWN and joystick.get_button(7) == 1:
                     stats.game_active = True
                     stats.final_active = False
@@ -157,7 +171,7 @@ def update_bosses(stats):
     # Обновить расположение объектов на экране.
     for boss in settings.bosses:
         boss.update()
-        if not boss.life_left:
+        if boss.life_left < 0:
             stats.final_active = True
             pygame.mixer.pause()
             pygame.mixer.music.load('images/outro.mp3')
@@ -246,6 +260,7 @@ def reset_after_collision(stats):
         stats.boss_active = False
         stats.shield_active = False
         stats.weapon_active = False
+        ship.surface = settings.ship_surface
         if settings.score > settings.record:
             settings.record = settings.score
             record.update_text(settings.record)
@@ -346,9 +361,8 @@ def blit_screen(stats):
     for ball in settings.balls:
         ball.blitme()
     if not stats.game_active and not stats.final_active:
-        pause.blitme()
-        score.blitme()
-        record.blitme()
+        for button in buttons:
+            button.blitme()
     if stats.final_active:
         for message in settings.final_text:
             message.blitme()
