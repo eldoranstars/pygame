@@ -19,14 +19,10 @@ collision = settings.collision
 screen = Screen(settings)
 ship = Ship(screen, settings)
 star = Star(screen, settings)
-space = Text(screen, "SPACE to SHOOT", screen.rect.centerx, screen.rect.centery - 110)
-pause = Text(screen, "Q to PAUSE", screen.rect.centerx, screen.rect.centery - 132)
-whilepause = Text(screen, "while pause:", screen.rect.centerx, screen.rect.centery - 88)
-quit = Text(screen, "Esc to QUIT", screen.rect.centerx, screen.rect.centery - 66)
-music = Text(screen, "M to switch MUSIC", screen.rect.centerx, screen.rect.centery - 44)
+pause = Text(screen, "PAUSE", screen.rect.centerx, screen.rect.centery - 44)
 record = Text(screen, "PREVIOS RECORD: {:,}", screen.rect.centerx, screen.rect.centery - 22)
 score = Text(screen, "SCORE: {:,}", screen.rect.centerx, screen.rect.centery)
-buttons = [quit, pause, whilepause, music, space, record, score] 
+buttons = [pause, record, score] 
 
 def create_boss(stats):
     # Создать босса для теста
@@ -66,17 +62,21 @@ def check_events(stats, joystick, sound):
                     sound.stop()
                 else:
                     sound.play()
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_f:
+                pygame.display.toggle_fullscreen()
             if event.type == pygame.KEYDOWN and event.key == pygame.K_q:
                 stats.game_active = True
                 stats.final_active = False
             if joystick:
-                if event.type == pygame.JOYBUTTONDOWN and joystick.get_button(6) == 1:
-                    sys.exit()
+                if event.type == pygame.JOYBUTTONDOWN and joystick.get_button(4) == 1:
+                    pygame.display.toggle_fullscreen()
                 if event.type == pygame.JOYBUTTONDOWN and joystick.get_button(5) == 1:
                     if pygame.mixer.get_busy():
                         sound.stop()
                     else:
                         sound.play()
+                if event.type == pygame.JOYBUTTONDOWN and joystick.get_button(6) == 1:
+                    sys.exit()
                 if event.type == pygame.JOYBUTTONDOWN and joystick.get_button(7) == 1:
                     stats.game_active = True
                     stats.final_active = False
