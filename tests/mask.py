@@ -1,8 +1,8 @@
 import pygame, sys
 
-class Player(pygame.sprite.Sprite):
+class Player():
     def __init__(self):
-        super().__init__()
+        # super().__init__()
         self.image = pygame.image.load('player.png')
         self.rect = self.image.get_rect()
         self.mask = pygame.mask.from_surface(self.image)
@@ -11,9 +11,9 @@ class Player(pygame.sprite.Sprite):
         if pygame.mouse.get_pos():
             self.rect.center = pygame.mouse.get_pos()
 
-class Circle(pygame.sprite.Sprite):
+class Circle():
     def __init__(self):
-        super().__init__()
+        # super().__init__()
         self.image = pygame.image.load('circle.png')
         self.rect = self.image.get_rect()
         self.rect.center = (400,400)
@@ -22,8 +22,10 @@ class Circle(pygame.sprite.Sprite):
 pygame.init()
 screen = pygame.display.set_mode((800,800))
 clock = pygame.time.Clock()
-player = pygame.sprite.GroupSingle(Player())
-circle = pygame.sprite.GroupSingle(Circle())
+player = Player()
+circle = Circle()
+# player = pygame.sprite.GroupSingle(Player())
+# circle = pygame.sprite.GroupSingle(Circle())
 i = 0
 
 while True:
@@ -35,12 +37,18 @@ while True:
     screen.fill('white')
 
     player.update()
-    player.draw(screen)
-    circle.draw(screen)
+    screen.blit(player.image, player.rect)
+    screen.blit(circle.image, circle.rect)
+    # screen.blit(player.mask_surface, player.rect)
+    # screen.blit(circle.mask_surface, circle.rect)
+    # player.draw(screen)
+    # circle.draw(screen)
 
-    if pygame.sprite.spritecollide(player.sprite,circle,False, pygame.sprite.collide_mask):
+    offset_x = circle.rect.left - player.rect.left
+    offset_y = circle.rect.top - player.rect.top
+    if player.mask.overlap(circle.mask, (offset_x, offset_y)):
         i += 1
-        print('overlap')
+        print('overlap' + str(i))
 
     pygame.display.update()
     clock.tick(60)

@@ -38,6 +38,13 @@ def create_boss(stats):
     stats.shield_active = True
     stats.boss_active = True
 
+def overlap(player, enemy):
+    # Получаем пиксельную маску для обработки коллизий.
+    player.mask = pygame.mask.from_surface(player.surface)
+    enemy.mask = pygame.mask.from_surface(enemy.surface)
+    overlap = player.mask.overlap(enemy.mask, (enemy.rect.left - player.rect.left, enemy.rect.top - player.rect.top))
+    return overlap
+
 def collision_test(object, wm, hm):
     # Вывод коллизий на экран.
     screen.surface.blit(pygame.Surface((collision(object.rect, wm, hm).width,collision(object.rect, wm, hm).height)), collision(object.rect, wm, hm))
@@ -178,7 +185,7 @@ def update_bosses(stats):
             pygame.mixer.music.load('images/outro.mp3')
             pygame.mixer.music.play()
             reset_after_collision(stats)
-        if collision(ship.rect, 0.6, 0.9).colliderect(collision(boss.rect, 0.8, 0.6)):
+        if overlap(ship, boss):
             reset_after_collision(stats)
 
 def update_balls(stats):
