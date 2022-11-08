@@ -28,6 +28,7 @@ class Boss():
             self.move_left = False        
         # Загрузка изображения и получение прямоугольника
         self.surface = settings.boss_surface
+        self.mask = settings.mask_from_surface(self.surface)
         self.rect = self.surface.get_rect()
         # Получение изначальных координат изображения
         self.rect.centerx = random.randrange(self.rect.width, settings.screen_width, self.rect.width)

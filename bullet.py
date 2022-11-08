@@ -8,6 +8,7 @@ class Bullet():
         self.speed_factor = settings.bullet_sf
         # Загрузка изображения и получение прямоугольника
         self.surface = settings.bullet_surface
+        self.mask = settings.mask_from_surface(self.surface)
         self.surface.fill(settings.bullet_color)
         self.rect = self.surface.get_rect()
         # Получение изначальных координат изображения

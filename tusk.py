@@ -8,6 +8,7 @@ class Tusk():
         self.speed_factor = settings.tusk_sf
         # Загрузка изображения и получение прямоугольника
         self.surface = settings.tusk_surface
+        self.mask = settings.mask_from_surface(self.surface)
         self.rect = self.surface.get_rect()
         # Получение изначальных координат изображения
         self.rect.midbottom = midbottom

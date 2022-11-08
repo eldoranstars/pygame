@@ -4,6 +4,7 @@ class Ship():
         self.screen = screen.surface
         # Загрузка изображения и получение прямоугольника
         self.surface = settings.ship_surface
+        self.mask = settings.mask_from_surface(self.surface)
         self.rect = self.surface.get_rect()
         # Получение изначальных координат изображения
         self.rect.centerx = screen.rect.centerx

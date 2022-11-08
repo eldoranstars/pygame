@@ -8,6 +8,7 @@ class Small():
         self.speed_factor = random.randrange(int(settings.small_sf_min), int(settings.small_sf_max))     
         # Загрузка изображения и получение прямоугольника
         self.surface = settings.small_surface
+        self.mask = settings.mask_from_surface(self.surface)
         self.rect = self.surface.get_rect()
         # Получение изначальных координат изображения
         self.rect.center = center

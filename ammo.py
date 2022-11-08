@@ -16,6 +16,7 @@ class Ammo():
             self.surface = settings.alien_surface
         if type == 'brain':
             self.surface = settings.brain_surface
+        self.mask = settings.mask_from_surface(self.surface)
         self.rect = self.surface.get_rect()
         # Получение изначальных координат изображения
         self.rect.centerx = random.randrange(self.rect.width, settings.screen_width, self.rect.width)

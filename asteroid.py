@@ -11,6 +11,7 @@ class Asteroid():
         self.speed_factor = settings.asteroid_sf
         # Загрузка изображения и получение прямоугольника
         self.surface = random.choice(settings.asteroid_surfaces)
+        self.mask = settings.mask_from_surface(self.surface)
         self.rect = self.surface.get_rect()
         # Получение изначальных координат изображения
         self.rect.center = center
@@ -18,9 +19,9 @@ class Asteroid():
     def update(self):
         # Обновление координат изображения
         for small in self.settings.smalls:
-            if self.settings.collision(small.rect, 0.8, 0.6).colliderect(self.settings.collision(self.rect, 0.7, 0.7)):
-                self.settings.asteroids.remove(self)
+            if self.settings.overlap(self, small):
                 self.settings.smalls.remove(small)
+                self.settings.asteroids.remove(self)
                 self.settings.score += 3
 
     def blitme(self):

@@ -29,21 +29,17 @@ def create_boss(stats):
     boss = Boss(screen, settings)
     settings.bosses.append(boss)
     settings.score = 1
-    settings.reload_bullet_time = 1100
-    settings.ball_chance = 16
-    settings.eye_chance = 16
     ship.surface = settings.shield_ship_surface
     stats.game_active = False
     stats.weapon_active = True
     stats.shield_active = True
     stats.boss_active = True
 
-def overlap(player, enemy):
+def overlap(small_obj, big_obj, area = 0.05):
     # Получаем пиксельную маску для обработки коллизий.
-    player.mask = pygame.mask.from_surface(player.surface)
-    enemy.mask = pygame.mask.from_surface(enemy.surface)
-    overlap = player.mask.overlap(enemy.mask, (enemy.rect.left - player.rect.left, enemy.rect.top - player.rect.top))
-    return overlap
+    # small_obj.mask = pygame.mask.from_surface(small_obj.surface)
+    # big_obj.mask = pygame.mask.from_surface(big_obj.surface)
+    return small_obj.mask.overlap_area(big_obj.mask, (big_obj.rect.left - small_obj.rect.left, big_obj.rect.top - small_obj.rect.top)) > small_obj.mask.count() * area
 
 def collision_test(object, wm, hm):
     # Вывод коллизий на экран.
@@ -139,7 +135,7 @@ def update_invaders(stats):
     # Обновить расположение объектов на экране.
     for invader in settings.invaders:
         invader.update()
-        if collision(ship.rect, 0.6, 0.9).colliderect(collision(invader.rect, 0.8, 0.6)):
+        if overlap(ship, invader):
             settings.invaders.remove(invader)
             reset_after_collision(stats)
 
@@ -147,7 +143,7 @@ def update_smalls(stats):
     # Обновить расположение объектов на экране.
     for small in settings.smalls:
         small.update()
-        if collision(ship.rect, 0.6, 0.9).colliderect(collision(small.rect, 0.8, 0.6)):
+        if overlap(ship, small):
             settings.smalls.remove(small)
             reset_after_collision(stats)
 
@@ -155,7 +151,7 @@ def update_eyes(stats):
     # Обновить расположение объектов на экране.
     for eye in settings.eyes:
         eye.update()
-        if collision(ship.rect, 0.6, 0.9).colliderect(collision(eye.rect, 0.7, 0.7)):
+        if overlap(ship, eye):
             settings.eyes.remove(eye)
             reset_after_collision(stats)
 
@@ -163,7 +159,7 @@ def update_asteroids(stats):
     # Обновить расположение объектов на экране.
     for asteroid in settings.asteroids:
         asteroid.update()
-        if collision(ship.rect, 0.6, 0.9).colliderect(collision(asteroid.rect, 0.7, 0.7)):
+        if overlap(ship, asteroid):
             settings.asteroids.remove(asteroid)
             reset_after_collision(stats)
 
@@ -171,7 +167,7 @@ def update_tusks(stats):
     # Обновить расположение объектов на экране.
     for tusk in settings.tusks:
         tusk.update()
-        if collision(ship.rect, 0.6, 0.9).colliderect(collision(tusk.rect, 0.9, 0.6)):
+        if overlap(ship, tusk):
             settings.tusks.remove(tusk)
             reset_after_collision(stats)
 
@@ -193,7 +189,7 @@ def update_balls(stats):
     for ball in settings.balls:
         ball.update()
         if not stats.shield_active:
-            if collision(ship.rect, 0.6, 0.9).colliderect(collision(ball.rect, 0.7, 0.7)):
+            if overlap(ship, ball):
                 settings.balls.remove(ball)
                 reset_after_collision(stats)
         if stats.shield_active:
@@ -220,7 +216,7 @@ def update_ammos(stats):
     # Обновить расположение объектов на экране.
     for ammo in settings.ammos:
         ammo.update()
-        if collision(ship.rect, 0.6, 0.9).colliderect(collision(ammo.rect, 0.7, 0.7)):
+        if overlap(ship, ammo):
             settings.ammos.remove(ammo)
             if ammo.type == 'weapon':
                 stats.weapon_active = True
@@ -331,7 +327,7 @@ def append_star():
         star = Star(screen, settings)
         settings.stars.append(star)
     for star in settings.drop_stars:
-        if collision(ship.rect, 0.6, 0.9).colliderect(collision(star.rect, 0.6, 0.6)):
+        if overlap(ship, star):
             settings.drop_stars.remove(star)
             settings.stars.append(star)
 
@@ -369,6 +365,7 @@ def blit_screen(stats):
         eye.blitme()
     for ball in settings.balls:
         ball.blitme()
+        collision_test(ball, 0.7, 0.7)
     if not stats.game_active and not stats.final_active:
         for button in buttons:
             button.blitme()

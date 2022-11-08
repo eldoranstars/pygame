@@ -14,6 +14,7 @@ class Eye():
         self.speed_factor = random.randrange(int(settings.eye_sf_min), int(settings.eye_sf_max))
         # Загрузка изображения и получение прямоугольника
         self.surface = settings.eye_surface
+        self.mask = settings.mask_from_surface(self.surface)
         self.rect = self.surface.get_rect()
         # Получение изначальных координат изображения
         self.rect.centerx = random.randrange(0, screen.rect.right, screen.rect.right)
