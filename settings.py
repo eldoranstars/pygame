@@ -65,7 +65,6 @@ class Settings():
         self.ammo_chance = 1
         self.ammo_allowed = 1
         # Титры
-        self.final_text = []
         self.messages = ['Producer:', 'eldoranstars', '', 'Quality Assurance:', 'eldoranstars', '', 'Gameplay Developer:', 'eldoranstars', '', \
             'Tools Developer:', 'eldoranstars', '', 'UI Developer:', 'eldoranstars', '', 'Audio Developer:', 'eldoranstars', '', 'Lead DevOps:', 'eldoranstars']
         # Динамические параметры игры
@@ -73,15 +72,14 @@ class Settings():
 
     def player_hit(self):
         # Сбросить параметры при столкновении
-        self.smalls = []
-        self.tusks = []
-        self.invaders = []
-        self.eyes = []
-        self.balls = []
-        self.bullets = []
-        self.asteroids = []
-        self.ammos = []
-        self.star_left -= 1
+        self.smalls.clear()
+        self.tusks.clear()
+        self.invaders.clear()
+        self.eyes.clear()
+        self.balls.clear()
+        self.bullets.clear()
+        self.asteroids.clear()
+        self.ammos.clear()
         self.invader_sf_min = 1
         self.invader_sf_max = 9
         self.eye_chance = 8
@@ -90,6 +88,15 @@ class Settings():
 
     def new_game(self):
         # Сбросить параметры для новой игры
+        self.final_text = []
+        self.smalls = []
+        self.tusks = []
+        self.invaders = []
+        self.eyes = []
+        self.balls = []
+        self.bullets = []
+        self.asteroids = []
+        self.ammos = []
         self.stars = []
         self.drop_stars = []
         self.bosses = []

@@ -280,6 +280,7 @@ def reset_after_collision(stats):
     else:
         stats.weapon_active = False
         ship.surface = settings.ship_surface
+        settings.star_left -= 1
         if len(settings.stars) > 0:
             settings.player_hit()
             drop_star = random.choice(settings.stars)
@@ -326,7 +327,7 @@ def append_ammo():
 
 def append_star():
     # Создание объектов в списке
-    if len(settings.stars) <= settings.star_left:
+    if len(settings.stars) < settings.star_left:
         star = Star(screen, settings)
         settings.stars.append(star)
     for star in settings.drop_stars:
