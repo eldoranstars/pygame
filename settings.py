@@ -118,6 +118,6 @@ class Settings():
         # Получаем пиксельную маску для обработки коллизий.
         return pygame.mask.from_surface(object)
 
-    def overlap(small_obj, big_obj, area = 0.05):
+    def overlap(self, small_obj, big_obj, area = 0.05):
         # Вычисляем пересечение масок для обработки коллизий.
         return small_obj.mask.overlap_area(big_obj.mask, (big_obj.rect.left - small_obj.rect.left, big_obj.rect.top - small_obj.rect.top)) > small_obj.mask.count() * area

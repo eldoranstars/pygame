@@ -50,27 +50,27 @@ class Ball():
             self.settings.ball_chance = self.settings.ball_chance * self.settings.ball_chance_reduction
         if self.surface == self.settings.alien_ball_surface:
             for boss in self.settings.bosses:
-                if self.settings.collision(self.rect, 0.7, 0.7).colliderect(self.settings.collision(boss.rect, 0.8, 0.6)):
+                if self.settings.overlap(self, boss):
                     self.settings.balls.remove(self)
                     boss.life_left -= 50
             for invader in self.settings.invaders:
-                if self.settings.collision(self.rect, 0.7, 0.7).colliderect(self.settings.collision(invader.rect, 0.8, 0.6)):
+                if self.settings.overlap(self, invader):
                     self.settings.invaders.remove(invader)
                     self.settings.score += 3
             for small in self.settings.smalls:
-                if self.settings.collision(self.rect, 0.7, 0.7).colliderect(self.settings.collision(small.rect, 0.8, 0.6)):
+                if self.settings.overlap(self, small):
                     self.settings.smalls.remove(small)
                     self.settings.score += 3
             for tusk in self.settings.tusks:
-                if self.settings.collision(self.rect, 0.7, 0.7).colliderect(self.settings.collision(tusk.rect, 0.9, 0.6)):
+                if self.settings.overlap(self, tusk):
                     self.settings.tusks.remove(tusk)
                     self.settings.score += 3
             for asteroid in self.settings.asteroids:
-                if self.settings.collision(self.rect, 0.7, 0.7).colliderect(self.settings.collision(asteroid.rect, 0.7, 0.7)):
+                if self.settings.overlap(self, asteroid):
                     self.settings.asteroids.remove(asteroid)
                     self.settings.score += 3
             for eye in self.settings.eyes:
-                if self.settings.collision(self.rect, 0.7, 0.7).colliderect(self.settings.collision(eye.rect, 0.7, 0.7)):
+                if self.settings.overlap(self, eye):
                     if self.settings.score > self.settings.boss_score and not self.settings.bosses:
                         ammo = Ammo(self.screen, self.settings, 'brain')
                     else:

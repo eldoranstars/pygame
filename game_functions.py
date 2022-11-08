@@ -16,13 +16,14 @@ from boss import Boss
 
 settings = Settings()
 collision = settings.collision
+overlap = settings.overlap
 screen = Screen(settings)
 ship = Ship(screen, settings)
 star = Star(screen, settings)
 pause = Text(screen, "PAUSE", screen.rect.centerx, screen.rect.centery - 44)
 record = Text(screen, "PREVIOS RECORD: {:,}", screen.rect.centerx, screen.rect.centery - 22)
 score = Text(screen, "SCORE: {:,}", screen.rect.centerx, screen.rect.centery)
-buttons = [pause, record, score] 
+buttons = [pause, record, score]
 
 def create_boss(stats):
     # Создать босса для теста
@@ -34,12 +35,6 @@ def create_boss(stats):
     stats.weapon_active = True
     stats.shield_active = True
     stats.boss_active = True
-
-def overlap(small_obj, big_obj, area = 0.05):
-    # Получаем пиксельную маску для обработки коллизий.
-    # small_obj.mask = pygame.mask.from_surface(small_obj.surface)
-    # big_obj.mask = pygame.mask.from_surface(big_obj.surface)
-    return small_obj.mask.overlap_area(big_obj.mask, (big_obj.rect.left - small_obj.rect.left, big_obj.rect.top - small_obj.rect.top)) > small_obj.mask.count() * area
 
 def collision_test(object, wm, hm):
     # Вывод коллизий на экран.
